@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="403.0" prefWidth="488.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AboutController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="420.0" minWidth="10.0" prefWidth="415.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.0" minWidth="10.0" prefWidth="53.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label prefHeight="70.0" prefWidth="467.0" text="Aplicació feta per:" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+         <font>
+            <Font size="38.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnCloseAbout" mnemonicParsing="false" onAction="#cmdCloseAbout" text="Tancar" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <Label fx:id="noms" prefHeight="53.0" prefWidth="283.0" text="Abel Morcillo" GridPane.columnSpan="2" GridPane.rowIndex="3">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+      <Label fx:id="noms1" prefHeight="53.0" prefWidth="283.0" text="Xavier Castillo" GridPane.rowIndex="4">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="70.0" prefWidth="467.0" text="About" textAlignment="CENTER" GridPane.columnSpan="2147483647">
+         <font>
+            <Font size="50.0" />
+         </font>
+      </Label>
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="6">
+         <children>
+            <Label fx:id="noms21" prefHeight="43.0" prefWidth="214.0" text="Versió: 0.2" textFill="#5e5e5e" />
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</GridPane>
