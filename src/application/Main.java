@@ -14,7 +14,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			Pane root = FXMLLoader.load(getClass().getResource("/application/MainController.fxml"));
+			Pane root = FXMLLoader.load(getClass().getResource("/application/LoginController.fxml"));
 			Scene scene = new Scene(root);
 			Util.openGUI(scene, primaryStage, Strings.TITLE_MAIN);
 		} catch(Exception e) {
