@@ -9,6 +9,8 @@ public class Util {
 
 	public static void openGUI(Scene scene, Stage stage, String title) {
 		Main.scene = scene;
+        //stage.setMaximized(true);
+
 		// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		stage.setScene(scene);
 		stage.setTitle(title);
@@ -21,6 +23,7 @@ public class Util {
 		stage.setScene(scene);
 		stage.setTitle(title);
 		stage.initStyle(style);
+        //stage.setMaximized(true);
 		stage.show();
 
 	}
