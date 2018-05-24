@@ -41,8 +41,9 @@ public class LoginController {
 				System.out.println("usuari trobat, comprovant password");
 				if(pass.equals(rs.getString("password"))){
 					System.out.println("Password correcta, benvingut");
+					return true;
 				} else {
-					
+					System.out.println("Password incorrecta");
 				}
 
 			} else {
