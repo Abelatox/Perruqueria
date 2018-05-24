@@ -1,18 +1,17 @@
 package application;
 
-import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -27,6 +26,14 @@ public class LoginController {
 	@FXML
 	private TextField tfUsuari, tfContrassenya;
 
+	public void initialize() {
+		tfContrassenya.setOnKeyReleased(e -> {
+			if (e.getCode() == KeyCode.ENTER) {
+				btnAccedir.fire();
+			}
+		});
+	}
+
 	@FXML
 	void btnAccedir(ActionEvent event) throws Exception {
 		if (validarLogin(tfUsuari.getText(), tfContrassenya.getText())) {
@@ -39,8 +46,11 @@ public class LoginController {
 
 	private boolean validarLogin(String nick, String pass) {
 		try {
-			Statement st = Main.getConnection().createStatement();
-			ResultSet rs = st.executeQuery(" select password from treballador where nick = '" + nick + "' ");
+			String consulta = " select password from treballador where nick = ? ";
+			PreparedStatement st = Main.getConnection().prepareStatement(consulta);
+			st.setString(1, nick);
+			ResultSet rs = st.executeQuery();
+
 			if (rs.next()) {
 				if (pass.equals(rs.getString("password"))) {
 					return true;
@@ -88,21 +98,6 @@ public class LoginController {
 	void cmdAbout(ActionEvent event) throws Exception {
 		System.out.println("Showing About");
 		new AboutController().initialize(new Stage());
-	}
-
-	public void initialize(Stage primaryStage) {
-		try {
-			Parent parent = FXMLLoader.load(getClass().getResource("Main.fxml"));
-			primaryStage.setTitle("Perruqueria");
-			primaryStage.setScene(new Scene(parent));
-			primaryStage.show();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void initialize() {
-
 	}
 
 }
