@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
@@ -16,7 +17,7 @@ import javafx.stage.Stage;
 public class MainController {
 
 	@FXML
-	private Button btnClient;
+	private Button btnAgenda;
 	@FXML
 	private Button btnAdmin;
 	@FXML
@@ -25,10 +26,10 @@ public class MainController {
 	private MenuItem closeButton;
 
 	@FXML
-	void cmdClient(ActionEvent event) throws Exception {
-		Pane root = FXMLLoader.load(getClass().getResource("/application/client/MainClient.fxml"));
+	void btnAgenda(ActionEvent event) throws Exception {
+		Pane root = FXMLLoader.load(getClass().getResource("/application/AgendaController.fxml"));
 		Scene scene = new Scene(root);
-		Stage stage = (Stage) btnClient.getScene().getWindow();
+		Stage stage = (Stage) btnAgenda.getScene().getWindow();
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
 
@@ -65,7 +66,7 @@ public class MainController {
 	}
 	
 	public void initialize() {
-		
+
 	}
 
 }
