@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class Util {
-	static final int[] RESOLUCIO = { 1080, 720 };
+	//static final int[] RESOLUCIO = { 1080, 720 };
 
 	public static void openGUI(Scene scene, Stage stage, String title) {
 		Main.scene = scene;

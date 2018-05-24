@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -19,7 +20,10 @@ public class LoginController {
 
 	@FXML
 	private Button btnAccedir;
-	
+
+	@FXML
+	private Label lOutput;
+
 	@FXML
 	private TextField tfUsuari, tfContrassenya;
 
@@ -36,23 +40,41 @@ public class LoginController {
 	private boolean validarLogin(String nick, String pass) {
 		try {
 			Statement st = Main.getConnection().createStatement();
-			ResultSet rs = st.executeQuery(" select password from treballador where nick = '"+nick+"' ");
-			if(rs.next()) {
-				System.out.println("usuari trobat, comprovant password");
-				if(pass.equals(rs.getString("password"))){
-					System.out.println("Password correcta, benvingut");
+			ResultSet rs = st.executeQuery(" select password from treballador where nick = '" + nick + "' ");
+			if (rs.next()) {
+				if (pass.equals(rs.getString("password"))) {
 					return true;
 				} else {
-					System.out.println("Password incorrecta");
+					timedLabel("Password incorrecta", lOutput, 2000);
 				}
-
 			} else {
-				System.out.println("Usuari no existeix");
+				timedLabel("Usuari no existeix", lOutput, 2000);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	private static void timedLabel(String text, Label label, int ms) {
+		label.setText(text);
+		timedLabel(label, ms);
+	}
+
+	private static void timedLabel(Label label, int ms) {
+		label.setVisible(true);
+
+		new Thread() { // Thread per que mostri la label un temps
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(ms);
+					label.setVisible(false);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
 
 	/*

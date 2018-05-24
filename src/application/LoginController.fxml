@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -13,7 +19,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="401.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
+<BorderPane prefHeight="401.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
    <center>
       <GridPane style="-fx-background-color: gray;" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -47,7 +53,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="tfUsuari" prefHeight="51.0" prefWidth="271.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3">
+            <TextField fx:id="tfUsuari" prefHeight="48.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3">
                <font>
                   <Font size="18.0" />
                </font>
@@ -59,7 +65,7 @@
                </padding></TextField>
             <ImageView fitHeight="140.0" fitWidth="281.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
                <image>
-                  <Image url="@../../../../Downloads/logofusions.png" />
+                  <Image url="@../recursos/logofusions.png" />
                </image>
             </ImageView>
             <PasswordField fx:id="tfContrassenya" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4">
@@ -73,6 +79,11 @@
                   <Font size="18.0" />
                </font>
             </PasswordField>
+            <Label fx:id="lOutput" alignment="CENTER" prefHeight="60.0" prefWidth="323.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
          </children>
          <BorderPane.margin>
             <Insets top="10.0" />
