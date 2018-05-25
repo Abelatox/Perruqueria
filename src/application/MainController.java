@@ -54,7 +54,7 @@ public class MainController {
 		new AboutController().initialize(new Stage());
 	}
 
-	public void initialize(Stage primaryStage) {
+	/*public void initialize(Stage primaryStage) {
 		try {
 			Parent parent = FXMLLoader.load(getClass().getResource("Main.fxml"));
 			primaryStage.setTitle("Perruqueria");
@@ -63,7 +63,7 @@ public class MainController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	public void initialize() {
 
