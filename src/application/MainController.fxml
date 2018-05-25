@@ -35,7 +35,7 @@
                <graphic>
                   <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../Downloads/diary.png" />
+                        <Image url="@../recursos/diary.png" />
                      </image>
                   </ImageView>
                </graphic></Button>
@@ -46,7 +46,7 @@
                <graphic>
                   <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../Downloads/user.png" />
+                        <Image url="@../recursos/user.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -57,7 +57,7 @@
                <graphic>
                   <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../Downloads/user.png" />
+                        <Image url="@../recursos/user.png" />
                      </image>
                   </ImageView>
                </graphic>
