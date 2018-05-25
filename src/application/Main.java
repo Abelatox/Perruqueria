@@ -19,7 +19,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			Class.forName("org.postgresql.Driver");
-			//con = DriverManager.getConnection("jdbc:postgresql://localhost/perruqueria", "postgres", "dam");
+			con = DriverManager.getConnection("jdbc:postgresql://localhost/perruqueria", "postgres", "dam");
 			con = DriverManager.getConnection("jdbc:postgresql://localhost/perruqueria", "postgres", "smx");
 			
 			// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
