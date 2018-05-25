@@ -18,12 +18,6 @@ public class MainController {
 
 	@FXML
 	private Button btnAgenda;
-	@FXML
-	private Button btnAdmin;
-	@FXML
-	private MenuItem mnClose;
-	@FXML
-	private MenuItem closeButton;
 
 	@FXML
 	void btnAgenda(ActionEvent event) throws Exception {
@@ -33,26 +27,6 @@ public class MainController {
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
 
-	@FXML
-	void cmdAdmin(ActionEvent event) throws Exception {
-		Pane root = FXMLLoader.load(getClass().getResource("/application/admin/MainAdmin.fxml"));
-		Scene scene = new Scene(root);
-		Stage stage = (Stage) btnAdmin.getScene().getWindow();
-		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
-	}
-
-	@FXML
-	void cmdClose(ActionEvent event) {
-		System.out.println("Closing " + mnClose.getText());
-		Platform.exit();
-		System.exit(0);
-	}
-
-	@FXML
-	void cmdAbout(ActionEvent event) throws Exception {
-		System.out.println("Showing About");
-		new AboutController().initialize(new Stage());
-	}
 
 	/*public void initialize(Stage primaryStage) {
 		try {
