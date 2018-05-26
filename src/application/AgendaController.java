@@ -1,6 +1,10 @@
 package application;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,41 +22,45 @@ public class AgendaController {
 
 	GraphicsContext gc;
 
-	static final int SIZEX = 1000;
-	static final int SIZEY = 400;
+	double SIZEX;
+	double SIZEY;
 
-	static final int OFFSETX = 100;
-	static final int OFFSETY = 50;
+	static final int OFFSETX = 10;
+	static final int OFFSETY = 5;
 
-	static final int ROWS = 8;
-	static final int COLUMNS = 10;
 
-	static final int DIVIDERX = SIZEX / COLUMNS;
-	static final int DIVIDERY = SIZEY / ROWS;
+	double DIVIDERX;
+	double DIVIDERY;
+
+	int horaInicial = 9;
+	int horaFinal = 18;
+	
+	int ROWS = (horaFinal - horaInicial) * 2 + 1; // Tantes files com hores obert * 2 (sencera i mitja) + capçalera
+	int COLUMNS;
+
+	ArrayList<Treballador> listTreballadors = new ArrayList<Treballador>();
+
+	static final int LINE_WIDTH = 2;
 
 	// Pixels per character
 	static final int PPC = 5;
 
-	public void initialize() {
-		// canvas.setWidth(SIZEX+1);
-		// canvas.setHeight(SIZEY);
+	public void initialize() throws SQLException {
+		SIZEX = canvas.getWidth();
+		SIZEY = canvas.getHeight();
+
+		getTreballadors();
+
+		COLUMNS = listTreballadors.size() + 1;
+		DIVIDERX = SIZEX / COLUMNS;
+		DIVIDERY = SIZEY / ROWS;
+
 		gc = canvas.getGraphicsContext2D();
-		gc.setFill(Color.rgb(0, 0, 0));
-
-		// Verticals
-		for (int x = OFFSETX; x <= SIZEX + OFFSETX; x += DIVIDERX) {
-			gc.fillRect(x, OFFSETY, 1, SIZEY);
-		}
-
-		// Horitzontals
-		for (int y = OFFSETY; y <= SIZEY + OFFSETY; y += DIVIDERY) {
-			gc.fillRect(OFFSETX, y, SIZEX, 1);
-		}
 
 		canvas.setOnMouseClicked(event -> {
-			int x = (int) event.getX();
-			int y = (int) event.getY();
-			System.out.println(x / DIVIDERX + "," + (y / DIVIDERY));
+			int x = (int) event.getX()-OFFSETX;
+			int y = (int) event.getY()-OFFSETY;
+			System.out.println((x / DIVIDERX) + "," + (y / DIVIDERY));
 
 			Pane root;
 			try {
@@ -65,21 +73,60 @@ public class AgendaController {
 			}
 		});
 
-		prepararTaula();
+		dibuixarTaula();
+
+		emplenarTaula();
 
 	}
 
-	private void prepararTaula() {
-		for (int i = 0; i < COLUMNS; i++) {
-			escriureACasella(i, 0, "Treballador");
+	private void getTreballadors() throws SQLException {
+		String consulta = " select dni, name, nick, telefon, correu from treballador ";
+		PreparedStatement st = Main.getConnection().prepareStatement(consulta);
+		ResultSet rs = st.executeQuery();
+
+		while (rs.next()) {
+			listTreballadors.add(new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
+		}
+
+	}
+
+	private void dibuixarTaula() {
+		gc.setFill(Color.rgb(0, 0, 0));
+
+		// Verticals
+		for (int x = OFFSETX; x <= SIZEX + OFFSETX; x += DIVIDERX) {
+			gc.fillRect(x, OFFSETY, LINE_WIDTH, SIZEY);
+		}
+
+		// Horitzontals
+		for (int y = OFFSETY; y <= SIZEY + OFFSETY; y += DIVIDERY) {
+			gc.fillRect(OFFSETX, y, SIZEX, LINE_WIDTH);
+		}
+
+	}
+
+	private void emplenarTaula() {
+		escriureACasella(0, 0, "HORA");
+
+		for (int i = 0; i < listTreballadors.size(); i++) {
+			escriureACasella(i + 1, 0, listTreballadors.get(i).nom);
+		}
+
+		for (int i = 0; i < ROWS + 1; i++) {
+			escriureACasella(0, (i + 1) * 2 - 1, horaInicial + i + ":00");
+		}
+		for (int i = 0; i < ROWS+1; i++) {
+			escriureACasella(0, (i + 1) * 2, horaInicial + i + ":30");
 		}
 
 	}
 
 	public void escriureACasella(int x, int y, String text) {
-		float XCENTER = OFFSETX + (x * DIVIDERX + DIVIDERX / 2);
-		float YCENTER = OFFSETY + (y * DIVIDERY + DIVIDERY / 3 * 1.7F);
-		gc.fillText(text, XCENTER - text.length() * PPC / 2, YCENTER);
+		float width = com.sun.javafx.tk.Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
+		float height = com.sun.javafx.tk.Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
+		double XCENTER = OFFSETX + (x * DIVIDERX + DIVIDERX / 2);
+		double YCENTER = OFFSETY + (y * DIVIDERY + DIVIDERY / 0.9F);
+		gc.fillText(text, XCENTER - width / 2, YCENTER - height / 2);
 	}
 
 }

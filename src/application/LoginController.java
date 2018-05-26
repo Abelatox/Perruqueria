@@ -87,13 +87,6 @@ public class LoginController {
 		}.start();
 	}
 
-	/*
-	 * @FXML void cmdAdmin(ActionEvent event) throws Exception { Pane root =
-	 * FXMLLoader.load(getClass().getResource("/application/admin/MainAdmin.fxml"));
-	 * Scene scene = new Scene(root); Stage stage = (Stage)
-	 * btnAccedir.getScene().getWindow(); Util.openGUI(scene, stage,
-	 * Strings.TITLE_MAIN); }
-	 */
 	@FXML
 	void cmdAbout(ActionEvent event) throws Exception {
 		System.out.println("Showing About");
