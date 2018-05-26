@@ -19,8 +19,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			Class.forName("org.postgresql.Driver");
-			con = DriverManager.getConnection("jdbc:postgresql://localhost/perruqueria", "postgres", "dam");
-			con = DriverManager.getConnection("jdbc:postgresql://localhost/perruqueria", "postgres", "smx");
+			con = DriverManager.getConnection("jdbc:postgresql://144.217.11.3/perruqueria", "pg", "dam");
 			
 			// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			Pane root = FXMLLoader.load(getClass().getResource("/application/LoginController.fxml"));
