@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.sun.javafx.tk.Toolkit;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -28,22 +30,20 @@ public class AgendaController {
 	static final int OFFSETX = 10;
 	static final int OFFSETY = 5;
 
+	double CELLX;
+	double CELLY;
 
-	double DIVIDERX;
-	double DIVIDERY;
+	// int horaInicial = 9;
+	// int horaFinal = 18;
 
-	int horaInicial = 9;
-	int horaFinal = 18;
-	
-	int ROWS = (horaFinal - horaInicial) * 2 + 1; // Tantes files com hores obert * 2 (sencera i mitja) + capçalera
+	// int ROWS = (horaFinal - horaInicial) * 2 + 1; // Tantes files com hores obert
+	// * 2 (sencera i mitja) + capçalera
+	int ROWS = 21;
 	int COLUMNS;
 
 	ArrayList<Treballador> listTreballadors = new ArrayList<Treballador>();
 
 	static final int LINE_WIDTH = 2;
-
-	// Pixels per character
-	static final int PPC = 5;
 
 	public void initialize() throws SQLException {
 		SIZEX = canvas.getWidth();
@@ -52,15 +52,20 @@ public class AgendaController {
 		getTreballadors();
 
 		COLUMNS = listTreballadors.size() + 1;
-		DIVIDERX = SIZEX / COLUMNS;
-		DIVIDERY = SIZEY / ROWS;
+		CELLX = SIZEX / COLUMNS;
+		CELLY = SIZEY / ROWS - LINE_WIDTH / 2;
 
 		gc = canvas.getGraphicsContext2D();
 
 		canvas.setOnMouseClicked(event -> {
-			int x = (int) event.getX()-OFFSETX;
-			int y = (int) event.getY()-OFFSETY;
-			System.out.println((x / DIVIDERX) + "," + (y / DIVIDERY));
+			int x = (int) event.getX() - OFFSETX;
+			int y = (int) event.getY() - OFFSETY;
+
+			int casellaX = (int) (x / CELLX);
+			int casellaY = (int) (y / CELLY);
+			System.out.println(casellaX + "," + casellaY);
+
+			escriureACasella(casellaX, casellaY, "X");
 
 			Pane root;
 			try {
@@ -74,9 +79,7 @@ public class AgendaController {
 		});
 
 		dibuixarTaula();
-
 		emplenarTaula();
-
 	}
 
 	private void getTreballadors() throws SQLException {
@@ -85,7 +88,8 @@ public class AgendaController {
 		ResultSet rs = st.executeQuery();
 
 		while (rs.next()) {
-			listTreballadors.add(new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
+			listTreballadors.add(
+					new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
 		}
 
 	}
@@ -94,12 +98,12 @@ public class AgendaController {
 		gc.setFill(Color.rgb(0, 0, 0));
 
 		// Verticals
-		for (int x = OFFSETX; x <= SIZEX + OFFSETX; x += DIVIDERX) {
-			gc.fillRect(x, OFFSETY, LINE_WIDTH, SIZEY);
+		for (int x = OFFSETX; x <= CELLX * listTreballadors.size() + OFFSETX; x += CELLX) {
+			gc.fillRect(x, OFFSETY, LINE_WIDTH, CELLY * ROWS);
 		}
 
 		// Horitzontals
-		for (int y = OFFSETY; y <= SIZEY + OFFSETY; y += DIVIDERY) {
+		for (int y = OFFSETY; y <= CELLY * ROWS + OFFSETY; y += CELLY+1) {
 			gc.fillRect(OFFSETX, y, SIZEX, LINE_WIDTH);
 		}
 
@@ -108,24 +112,28 @@ public class AgendaController {
 	private void emplenarTaula() {
 		escriureACasella(0, 0, "HORA");
 
+		// Nom
 		for (int i = 0; i < listTreballadors.size(); i++) {
 			escriureACasella(i + 1, 0, listTreballadors.get(i).nom);
 		}
 
+		// :00
 		for (int i = 0; i < ROWS + 1; i++) {
-			escriureACasella(0, (i + 1) * 2 - 1, horaInicial + i + ":00");
+			escriureACasella(0, (i + 1) * 2 - 1, 9 + i + ":00");
 		}
-		for (int i = 0; i < ROWS+1; i++) {
-			escriureACasella(0, (i + 1) * 2, horaInicial + i + ":30");
+
+		// :30
+		for (int i = 0; i < ROWS + 1; i++) {
+			escriureACasella(0, (i + 1) * 2, 9 + i + ":30");
 		}
 
 	}
 
 	public void escriureACasella(int x, int y, String text) {
-		float width = com.sun.javafx.tk.Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
-		float height = com.sun.javafx.tk.Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
-		double XCENTER = OFFSETX + (x * DIVIDERX + DIVIDERX / 2);
-		double YCENTER = OFFSETY + (y * DIVIDERY + DIVIDERY / 0.9F);
+		float width = Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
+		float height = Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
+		double XCENTER = OFFSETX + (x * CELLX + CELLX / 2);
+		double YCENTER = OFFSETY + (y * CELLY + CELLY / 0.9F);
 		gc.fillText(text, XCENTER - width / 2, YCENTER - height / 2);
 	}
 
