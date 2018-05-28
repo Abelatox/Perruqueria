@@ -53,28 +53,33 @@ public class AgendaController {
 
 		COLUMNS = listTreballadors.size() + 1;
 		CELLX = SIZEX / COLUMNS;
-		CELLY = SIZEY / ROWS - LINE_WIDTH / 2;
+		CELLY = SIZEY / ROWS;// - LINE_WIDTH / 2;
+
+		SIZEX = CELLX * COLUMNS;
+		SIZEY = SIZEY * ROWS;
 
 		gc = canvas.getGraphicsContext2D();
 
 		canvas.setOnMouseClicked(event -> {
-			int x = (int) event.getX() - OFFSETX;
-			int y = (int) event.getY() - OFFSETY;
+			double x = event.getX() - OFFSETX;
+			double y = event.getY() - OFFSETY;
 
 			int casellaX = (int) (x / CELLX);
 			int casellaY = (int) (y / CELLY);
-			System.out.println(casellaX + "," + casellaY);
+			System.out.println(casellaX + ":" + x + "," + casellaY + ":" + y);
 
 			escriureACasella(casellaX, casellaY, "X");
 
-			Pane root;
-			try {
-				root = FXMLLoader.load(getClass().getResource("/application/AgendaController.fxml"));
-				Scene scene = new Scene(root);
-				Stage stage = (Stage) canvas.getScene().getWindow();
-				Util.openGUI(scene, stage, Strings.TITLE_MAIN);
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (1 == 1) {
+				Pane root;
+				try {
+					root = FXMLLoader.load(getClass().getResource("/application/AgendaController.fxml"));
+					Scene scene = new Scene(root);
+					Stage stage = (Stage) canvas.getScene().getWindow();
+					Util.openGUI(scene, stage, Strings.TITLE_MAIN);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 
@@ -98,12 +103,12 @@ public class AgendaController {
 		gc.setFill(Color.rgb(0, 0, 0));
 
 		// Verticals
-		for (int x = OFFSETX; x <= CELLX * listTreballadors.size() + OFFSETX; x += CELLX) {
-			gc.fillRect(x, OFFSETY, LINE_WIDTH, CELLY * ROWS);
+		for (int x = OFFSETX; x <= CELLX * COLUMNS + OFFSETX; x += CELLX) {
+			gc.fillRect(x, OFFSETY, LINE_WIDTH, SIZEY);
 		}
 
 		// Horitzontals
-		for (int y = OFFSETY; y <= CELLY * ROWS + OFFSETY; y += CELLY+1) {
+		for (int y = OFFSETY; y <= CELLY * ROWS + OFFSETY; y += CELLY) {
 			gc.fillRect(OFFSETX, y, SIZEX, LINE_WIDTH);
 		}
 
