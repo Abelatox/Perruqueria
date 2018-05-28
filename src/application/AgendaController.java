@@ -38,7 +38,7 @@ public class AgendaController {
 
 	// int ROWS = (horaFinal - horaInicial) * 2 + 1; // Tantes files com hores obert
 	// * 2 (sencera i mitja) + capçalera
-	int ROWS = 20;
+	int ROWS = 21;
 	int COLUMNS;
 
 	ArrayList<Treballador> listTreballadors = new ArrayList<Treballador>();
@@ -67,11 +67,11 @@ public class AgendaController {
 
 			int casellaX = (int) (x / CELLX);
 			int casellaY = (int) (y / CELLY);
-			System.out.println(casellaX + ":" + x + "," + casellaY + ":" + y);
+			//System.out.println(casellaX + ":" + x + "," + casellaY + ":" + y);
 
 			escriureACasella(casellaX, casellaY, "X");
-			System.out.println(SIZEX + "/" + CELLX+"/"+COLUMNS);
-			System.out.println(SIZEY + "/" + CELLY+"/"+ROWS);
+			//System.out.println(SIZEX + "/" + CELLX+"/"+COLUMNS);
+			//System.out.println(SIZEY + "/" + CELLY+"/"+ROWS);
 
 			if (1 == 2) {
 				Pane root;
@@ -106,12 +106,12 @@ public class AgendaController {
 		gc.setFill(Color.rgb(0, 0, 0));
 
 		// Verticals
-		for (int x = OFFSETX; x <= CELLX * COLUMNS + OFFSETX; x += CELLX) {
+		for (double x = OFFSETX; x <= CELLX * COLUMNS + OFFSETX; x += CELLX) {
 			gc.fillRect(x, OFFSETY, LINE_WIDTH, SIZEY);
 		}
 
 		// Horitzontals
-		for (int y = OFFSETY; y <= CELLY * ROWS + OFFSETY; y += CELLY) {
+		for (double y = OFFSETY; y <= CELLY * ROWS + OFFSETY; y += CELLY) {
 			gc.fillRect(OFFSETX, y, SIZEX, LINE_WIDTH);
 		}
 
