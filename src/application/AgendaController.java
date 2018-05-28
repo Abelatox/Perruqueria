@@ -38,7 +38,7 @@ public class AgendaController {
 
 	// int ROWS = (horaFinal - horaInicial) * 2 + 1; // Tantes files com hores obert
 	// * 2 (sencera i mitja) + capçalera
-	int ROWS = 21;
+	int ROWS = 20;
 	int COLUMNS;
 
 	ArrayList<Treballador> listTreballadors = new ArrayList<Treballador>();
@@ -47,7 +47,8 @@ public class AgendaController {
 
 	public void initialize() throws SQLException {
 		SIZEX = canvas.getWidth();
-		SIZEY = canvas.getHeight();
+		//canvas.setHeight(720);
+		SIZEY = canvas.getHeight();// canvas.getHeight();
 
 		getTreballadors();
 
@@ -55,8 +56,8 @@ public class AgendaController {
 		CELLX = SIZEX / COLUMNS;
 		CELLY = SIZEY / ROWS;// - LINE_WIDTH / 2;
 
-		SIZEX = CELLX * COLUMNS;
-		SIZEY = SIZEY * ROWS;
+		//SIZEX = CELLX * COLUMNS;
+		//SIZEY = SIZEY * ROWS;
 
 		gc = canvas.getGraphicsContext2D();
 
@@ -69,8 +70,10 @@ public class AgendaController {
 			System.out.println(casellaX + ":" + x + "," + casellaY + ":" + y);
 
 			escriureACasella(casellaX, casellaY, "X");
+			System.out.println(SIZEX + "/" + CELLX+"/"+COLUMNS);
+			System.out.println(SIZEY + "/" + CELLY+"/"+ROWS);
 
-			if (1 == 1) {
+			if (1 == 2) {
 				Pane root;
 				try {
 					root = FXMLLoader.load(getClass().getResource("/application/AgendaController.fxml"));
