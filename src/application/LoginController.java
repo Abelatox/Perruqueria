@@ -55,36 +55,15 @@ public class LoginController {
 				if (pass.equals(rs.getString("password"))) {
 					return true;
 				} else {
-					timedLabel("Password incorrecta", lOutput, 2000);
+					Util.timedLabel("Password incorrecta", lOutput, 2000);
 				}
 			} else {
-				timedLabel("Usuari no existeix", lOutput, 2000);
+				Util.timedLabel("Usuari no existeix", lOutput, 2000);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	private static void timedLabel(String text, Label label, int ms) {
-		label.setText(text);
-		timedLabel(label, ms);
-	}
-
-	private static void timedLabel(Label label, int ms) {
-		label.setVisible(true);
-
-		new Thread() { // Thread per que mostri la label un temps
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(ms);
-					label.setVisible(false);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}.start();
 	}
 
 	@FXML

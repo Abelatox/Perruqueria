@@ -36,8 +36,7 @@ public class AgendaController {
 	// int horaInicial = 9;
 	// int horaFinal = 18;
 
-	// int ROWS = (horaFinal - horaInicial) * 2 + 1; // Tantes files com hores obert
-	// * 2 (sencera i mitja) + capçalera
+	// int ROWS = (horaFinal - horaInicial) * 2 + 1; // Tantes files com hores obert * 2 (sencera i mitja) + capçalera
 	int ROWS = 21;
 	int COLUMNS;
 
@@ -47,17 +46,16 @@ public class AgendaController {
 
 	public void initialize() throws SQLException {
 		SIZEX = canvas.getWidth();
-		//canvas.setHeight(720);
-		SIZEY = canvas.getHeight();// canvas.getHeight();
+		SIZEY = canvas.getHeight();
 
 		getTreballadors();
 
+		//Nº Columnes = una per treballador + una per hores
 		COLUMNS = listTreballadors.size() + 1;
+		
+		//Mida en píxels de cada cel·la individual
 		CELLX = SIZEX / COLUMNS;
-		CELLY = SIZEY / ROWS;// - LINE_WIDTH / 2;
-
-		//SIZEX = CELLX * COLUMNS;
-		//SIZEY = SIZEY * ROWS;
+		CELLY = SIZEY / ROWS;
 
 		gc = canvas.getGraphicsContext2D();
 
@@ -67,13 +65,11 @@ public class AgendaController {
 
 			int casellaX = (int) (x / CELLX);
 			int casellaY = (int) (y / CELLY);
-			//System.out.println(casellaX + ":" + x + "," + casellaY + ":" + y);
 
 			escriureACasella(casellaX, casellaY, "X");
-			//System.out.println(SIZEX + "/" + CELLX+"/"+COLUMNS);
-			//System.out.println(SIZEY + "/" + CELLY+"/"+ROWS);
 
-			if (1 == 2) {
+			//TODO eliminar funció
+			if (1 == 1) {
 				Pane root;
 				try {
 					root = FXMLLoader.load(getClass().getResource("/application/AgendaController.fxml"));
@@ -90,6 +86,10 @@ public class AgendaController {
 		emplenarTaula();
 	}
 
+	/**
+	 * Obté i carrega les dades dels treballadors
+	 * @throws SQLException
+	 */
 	private void getTreballadors() throws SQLException {
 		String consulta = " select dni, name, nick, telefon, correu from treballador ";
 		PreparedStatement st = Main.getConnection().prepareStatement(consulta);
@@ -106,12 +106,12 @@ public class AgendaController {
 		gc.setFill(Color.rgb(0, 0, 0));
 
 		// Verticals
-		for (double x = OFFSETX; x <= CELLX * COLUMNS + OFFSETX; x += CELLX) {
+		for (double x = OFFSETX; x <= SIZEX + OFFSETX; x += CELLX) {
 			gc.fillRect(x, OFFSETY, LINE_WIDTH, SIZEY);
 		}
 
 		// Horitzontals
-		for (double y = OFFSETY; y <= CELLY * ROWS + OFFSETY; y += CELLY) {
+		for (double y = OFFSETY; y <= SIZEY + OFFSETY; y += CELLY) {
 			gc.fillRect(OFFSETX, y, SIZEX, LINE_WIDTH);
 		}
 
@@ -134,6 +134,27 @@ public class AgendaController {
 		for (int i = 0; i < ROWS + 1; i++) {
 			escriureACasella(0, (i + 1) * 2, 9 + i + ":30");
 		}
+		
+		//Dades dels treballadors
+		new Thread() {
+			public void run() {
+				for(Treballador t : listTreballadors) {
+					try {
+						String consulta = " select dni, name, nick, telefon, correu from treballador ";
+						PreparedStatement st = Main.getConnection().prepareStatement(consulta);
+						ResultSet rs = st.executeQuery();
+						
+						while (rs.next()) {
+							//(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5));
+						}
+
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					
+				}
+			}
+		}.start();
 
 	}
 

@@ -20,26 +20,98 @@
 <?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="720" prefWidth="1280" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.TreballadorController">
-   <center>
-      <GridPane BorderPane.alignment="CENTER">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="420.0" minWidth="10.0" prefWidth="426.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="645.0" minWidth="10.0" prefWidth="426.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="421.0" minWidth="10.0" prefWidth="426.0" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <BorderPane.margin>
-            <Insets top="10.0" />
-         </BorderPane.margin>
-      </GridPane>
-   </center>
+	<center>
+		<GridPane BorderPane.alignment="CENTER">
+			<columnConstraints>
+				<ColumnConstraints hgrow="SOMETIMES" maxWidth="638.0" minWidth="10.0" prefWidth="638.0" />
+				<ColumnConstraints hgrow="SOMETIMES" maxWidth="645.0" minWidth="2.0" prefWidth="6.0" />
+				<ColumnConstraints hgrow="SOMETIMES" maxWidth="640.0" minWidth="10.0" prefWidth="636.0" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+			</rowConstraints>
+			<BorderPane.margin>
+				<Insets top="10.0" />
+			</BorderPane.margin>
+			<children>
+				<TextField fx:id="tfDNI" prefHeight="116.0" prefWidth="636.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+					<font>
+						<Font size="36.0" />
+					</font>
+				</TextField>
+				<TextField fx:id="tfNom" prefHeight="116.0" prefWidth="636.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+					<font>
+						<Font size="36.0" />
+					</font>
+				</TextField>
+				<TextField fx:id="tfNick" prefHeight="116.0" prefWidth="636.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+					<font>
+						<Font size="36.0" />
+					</font>
+				</TextField>
+				<PasswordField fx:id="pfPassword" prefHeight="116.0" prefWidth="636.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
+					<font>
+						<Font size="36.0" />
+					</font>
+				</PasswordField>
+				<TextField fx:id="tfTelefon" prefHeight="116.0" prefWidth="636.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+					<font>
+						<Font size="36.0" />
+					</font>
+				</TextField>
+				
+				<TextField fx:id="tfCorreu" prefHeight="116.0" prefWidth="636.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
+					<font>
+						<Font size="36.0" />
+					</font>
+				</TextField>
+				<Label prefHeight="115.0" prefWidth="670.0" text="DNI" GridPane.rowIndex="1">
+					<font>
+						<Font size="64.0" />
+					</font>
+				</Label>
+				<Label prefHeight="127.0" prefWidth="661.0" text="Nom Complet" GridPane.rowIndex="2">
+					<font>
+						<Font size="64.0" />
+					</font>
+				</Label>
+				<Label prefHeight="195.0" prefWidth="677.0" text="Nick" GridPane.rowIndex="3">
+					<font>
+						<Font size="64.0" />
+					</font>
+				</Label>
+				<Label prefHeight="153.0" prefWidth="714.0" text="Password" GridPane.rowIndex="4">
+					<font>
+						<Font size="64.0" />
+					</font>
+				</Label>
+				<Label prefHeight="94.0" prefWidth="687.0" text="Telèfon" GridPane.rowIndex="5">
+					<font>
+						<Font size="64.0" />
+					</font>
+				</Label>
+				<Label prefHeight="195.0" prefWidth="698.0" text="Correu" GridPane.rowIndex="6">
+					<font>
+						<Font size="64.0" />
+					</font>
+				</Label>
+				
+				<Button fx:id="btnRegistrar" mnemonicParsing="false" onAction="#btnRegistrar" prefHeight="88.0" prefWidth="716.0" text="Registrar Treballador" GridPane.columnIndex="2" GridPane.rowIndex="7">
+               <font>
+                  <Font size="36.0" />
+               </font></Button>
+            <Label fx:id="lblInfo" prefHeight="103.0" prefWidth="725.0" GridPane.rowIndex="7">
+               <font>
+                  <Font size="24.0" />
+               </font></Label>
+			</children>
+		</GridPane>
+	</center>
 </BorderPane>
