@@ -6,11 +6,17 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class Util {
-	//static final int[] RESOLUCIO = { 1080, 720 };
 
+	/**
+	 * Obre una pantalla
+	 * 
+	 * @param scene
+	 * @param stage
+	 * @param title
+	 */
 	public static void openGUI(Scene scene, Stage stage, String title) {
 		Main.scene = scene;
-       // stage.setMaximized(true);
+		// stage.setMaximized(true);
 
 		// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		stage.setScene(scene);
@@ -18,22 +24,43 @@ public class Util {
 		stage.show();
 	}
 
+	/**
+	 * Obre una pantalla amb un StageStyle passat per paràmetre
+	 * 
+	 * @param scene
+	 * @param stage
+	 * @param style
+	 * @param title
+	 */
 	public static void openGUI(Scene scene, Stage stage, StageStyle style, String title) {
 		Main.scene = scene;
 		// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		stage.setScene(scene);
 		stage.setTitle(title);
 		stage.initStyle(style);
-        //stage.setMaximized(true);
+		// stage.setMaximized(true);
 		stage.show();
 
 	}
-	
+
+	/**
+	 * Ensenya i oculta una etiqueta passat un temps amb un text
+	 * 
+	 * @param text
+	 * @param label
+	 * @param ms
+	 */
 	public static void timedLabel(String text, Label label, int ms) {
 		label.setText(text);
 		timedLabel(label, ms);
 	}
 
+	/**
+	 * Ensenya i oculta una etiqueta passat un temps
+	 * 
+	 * @param label
+	 * @param ms
+	 */
 	public static void timedLabel(Label label, int ms) {
 		label.setVisible(true);
 
@@ -50,11 +77,17 @@ public class Util {
 		}.start();
 	}
 
+	/**
+	 * Funció per comprovar si és int
+	 * 
+	 * @param text
+	 * @return
+	 */
 	public static boolean esInt(String text) {
 		try {
 			Integer.parseInt(text);
 			return true;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			return false;
 		}
 	}

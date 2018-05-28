@@ -122,7 +122,7 @@ public class AgendaController {
 
 		// Nom
 		for (int i = 0; i < listTreballadors.size(); i++) {
-			escriureACasella(i + 1, 0, listTreballadors.get(i).nom);
+			escriureACasella(i + 1, 0, listTreballadors.get(i).getNom());
 		}
 
 		// :00

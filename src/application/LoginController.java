@@ -34,6 +34,11 @@ public class LoginController {
 		});
 	}
 
+	/**
+	 * Comprova si el login és vàl·lid i entra al menú principal
+	 * @param event
+	 * @throws Exception
+	 */
 	@FXML
 	void btnAccedir(ActionEvent event) throws Exception {
 		if (validarLogin(tfUsuari.getText(), tfContrassenya.getText())) {
@@ -44,6 +49,12 @@ public class LoginController {
 		}
 	}
 
+	/**
+	 * Comprova si l'usuari existeix a la base de dades i si la contrassenya és correcta
+	 * @param nick
+	 * @param pass
+	 * @return
+	 */
 	private boolean validarLogin(String nick, String pass) {
 		try {
 			String consulta = " select password from treballador where nick = ? ";
@@ -65,11 +76,4 @@ public class LoginController {
 		}
 		return false;
 	}
-
-	@FXML
-	void cmdAbout(ActionEvent event) throws Exception {
-		System.out.println("Showing About");
-		new AboutController().initialize(new Stage());
-	}
-
 }

@@ -1,8 +1,8 @@
 package application;
 
 public class Treballador {
-	String dni, nom, nick, mail;
-	int tlf;
+	private String dni, nom, nick, mail;
+	private int tlf;
 
 	public Treballador(String dni, String nom, String nick, int tlf, String mail) {
 		this.dni = dni;
@@ -11,5 +11,44 @@ public class Treballador {
 		this.mail = mail;
 		this.tlf = tlf;
 	}
+	
+	public String getDni() {
+		return dni;
+	}
 
+	public void setDni(String dni) {
+		this.dni = dni;
+	}
+
+	public String getNom() {
+		return nom;
+	}
+
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+
+	public String getNick() {
+		return nick;
+	}
+
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	public int getTlf() {
+		return tlf;
+	}
+
+	public void setTlf(int tlf) {
+		this.tlf = tlf;
+	}
 }

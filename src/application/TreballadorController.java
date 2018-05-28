@@ -23,11 +23,12 @@ public class TreballadorController {
 
 	@FXML
 	private Label lblInfo;
-	
-	public void initialize() {
-		
-	}
 
+	/**
+	 * Registrar a un treballador a partir dels camps
+	 * @param event
+	 * @throws Exception
+	 */
 	@FXML
 	void btnRegistrar(ActionEvent event) throws Exception {
 		if(tfDNI.getText().equals("") || tfNom.getText().equals("") || tfNick.getText().equals("") || pfPassword.getText().equals("") || tfTelefon.getText().equals("") || tfCorreu.getText().equals("")) {
@@ -52,15 +53,5 @@ public class TreballadorController {
 				Util.timedLabel("El telèfon no es un número", lblInfo, 2000);
 			}
 		}
-		/*if (validarLogin(tfUsuari.getText(), tfContrassenya.getText())) {
-			
-		}*/
 	}
-	
-	@FXML
-	void cmdAbout(ActionEvent event) throws Exception {
-		System.out.println("Showing About");
-		new AboutController().initialize(new Stage());
-	}
-
 }

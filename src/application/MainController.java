@@ -13,6 +13,11 @@ public class MainController {
 	@FXML
 	private Button btnAgenda, btnClient, btnTreballador;
 
+	/**
+	 * Menu Agenda
+	 * @param event
+	 * @throws Exception
+	 */
 	@FXML
 	void btnAgenda(ActionEvent event) throws Exception {
 		Pane root = FXMLLoader.load(getClass().getResource("/application/AgendaController.fxml"));
@@ -21,6 +26,11 @@ public class MainController {
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
 	
+	/**
+	 * Menu Client
+	 * @param event
+	 * @throws Exception
+	 */
 	@FXML
 	void btnClient(ActionEvent event) throws Exception {
 		Pane root = FXMLLoader.load(getClass().getResource("/application/ClientController.fxml"));
@@ -29,6 +39,11 @@ public class MainController {
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
 	
+	/**
+	 * Pantalla per afegir un treballador
+	 * @param event
+	 * @throws Exception
+	 */
 	@FXML
 	void btnTreballador(ActionEvent event) throws Exception {
 		Pane root = FXMLLoader.load(getClass().getResource("/application/TreballadorController.fxml"));
