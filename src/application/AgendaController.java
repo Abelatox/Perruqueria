@@ -27,16 +27,11 @@ public class AgendaController {
 	double SIZEX;
 	double SIZEY;
 
-	static final int OFFSETX = 10;
-	static final int OFFSETY = 5;
+	static final int LEFT_OFFSET = 5, TOP_OFFSET = 5, BOTTOM_OFFSET = 20, RIGHT_OFFSET = 10;
 
 	double CELLX;
 	double CELLY;
 
-	// int horaInicial = 9;
-	// int horaFinal = 18;
-
-	// int ROWS = (horaFinal - horaInicial) * 2 + 1; // Tantes files com hores obert * 2 (sencera i mitja) + capçalera
 	int ROWS = 21;
 	int COLUMNS;
 
@@ -45,30 +40,30 @@ public class AgendaController {
 	static final int LINE_WIDTH = 2;
 
 	public void initialize() throws SQLException {
-		SIZEX = canvas.getWidth();
-		SIZEY = canvas.getHeight();
+		SIZEX = canvas.getWidth() - RIGHT_OFFSET;
+		SIZEY = canvas.getHeight() - BOTTOM_OFFSET;
 
 		getTreballadors();
 
-		//Nº Columnes = una per treballador + una per hores
+		// Nº Columnes = una per treballador + una per hores
 		COLUMNS = listTreballadors.size() + 1;
-		
-		//Mida en píxels de cada cel·la individual
+
+		// Mida en píxels de cada cel·la individual
 		CELLX = SIZEX / COLUMNS;
 		CELLY = SIZEY / ROWS;
 
 		gc = canvas.getGraphicsContext2D();
 
 		canvas.setOnMouseClicked(event -> {
-			double x = event.getX() - OFFSETX;
-			double y = event.getY() - OFFSETY;
+			double x = event.getX() - LEFT_OFFSET;
+			double y = event.getY() - TOP_OFFSET;
 
 			int casellaX = (int) (x / CELLX);
 			int casellaY = (int) (y / CELLY);
 
 			escriureACasella(casellaX, casellaY, "X");
 
-			//TODO eliminar funció
+			// TODO eliminar funció
 			if (1 == 1) {
 				Pane root;
 				try {
@@ -88,6 +83,7 @@ public class AgendaController {
 
 	/**
 	 * Obté i carrega les dades dels treballadors
+	 * 
 	 * @throws SQLException
 	 */
 	private void getTreballadors() throws SQLException {
@@ -106,13 +102,13 @@ public class AgendaController {
 		gc.setFill(Color.rgb(0, 0, 0));
 
 		// Verticals
-		for (double x = OFFSETX; x <= SIZEX + OFFSETX; x += CELLX) {
-			gc.fillRect(x, OFFSETY, LINE_WIDTH, SIZEY);
+		for (double x = LEFT_OFFSET; x <= SIZEX + LEFT_OFFSET; x += CELLX) {
+			gc.fillRect(x, TOP_OFFSET, LINE_WIDTH, SIZEY);
 		}
 
 		// Horitzontals
-		for (double y = OFFSETY; y <= SIZEY + OFFSETY; y += CELLY) {
-			gc.fillRect(OFFSETX, y, SIZEX, LINE_WIDTH);
+		for (double y = TOP_OFFSET; y <= SIZEY + TOP_OFFSET; y += CELLY) {
+			gc.fillRect(LEFT_OFFSET, y, SIZEX, LINE_WIDTH);
 		}
 
 	}
@@ -126,32 +122,34 @@ public class AgendaController {
 		}
 
 		// :00
-		for (int i = 0; i < ROWS + 1; i++) {
+		for (int i = 0; i < ROWS / 2; i++) {
 			escriureACasella(0, (i + 1) * 2 - 1, 9 + i + ":00");
 		}
 
 		// :30
-		for (int i = 0; i < ROWS + 1; i++) {
+		for (int i = 0; i < ROWS / 2; i++) {
 			escriureACasella(0, (i + 1) * 2, 9 + i + ":30");
 		}
-		
-		//Dades dels treballadors
+
+		// Dades dels treballadors
 		new Thread() {
 			public void run() {
-				for(Treballador t : listTreballadors) {
+				for (Treballador t : listTreballadors) {
 					try {
 						String consulta = " select dni, name, nick, telefon, correu from treballador ";
 						PreparedStatement st = Main.getConnection().prepareStatement(consulta);
 						ResultSet rs = st.executeQuery();
-						
+
 						while (rs.next()) {
-							//(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5));
+							// TODO Posar les dades a les caselles corresponents
+							// (rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4),
+							// rs.getString(5));
 						}
 
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
-					
+
 				}
 			}
 		}.start();
@@ -161,8 +159,8 @@ public class AgendaController {
 	public void escriureACasella(int x, int y, String text) {
 		float width = Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
 		float height = Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
-		double XCENTER = OFFSETX + (x * CELLX + CELLX / 2);
-		double YCENTER = OFFSETY + (y * CELLY + CELLY / 0.9F);
+		double XCENTER = LEFT_OFFSET + (x * CELLX + CELLX / 2);
+		double YCENTER = TOP_OFFSET + (y * CELLY + CELLY / 0.9F);
 		gc.fillText(text, XCENTER - width / 2, YCENTER - height / 2);
 	}
 
