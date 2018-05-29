@@ -26,15 +26,17 @@ public class TreballadorController {
 
 	/**
 	 * Registrar a un treballador a partir dels camps
+	 * 
 	 * @param event
 	 * @throws Exception
 	 */
 	@FXML
 	void btnRegistrar(ActionEvent event) throws Exception {
-		if(tfDNI.getText().equals("") || tfNom.getText().equals("") || tfNick.getText().equals("") || pfPassword.getText().equals("") || tfTelefon.getText().equals("") || tfCorreu.getText().equals("")) {
+		if (tfDNI.getText().equals("") || tfNom.getText().equals("") || tfNick.getText().equals("")
+				|| pfPassword.getText().equals("") || tfTelefon.getText().equals("") || tfCorreu.getText().equals("")) {
 			Util.timedLabel("No pot haver-hi camps buits", lblInfo, 2000);
 		} else {
-			if(Util.esInt(tfTelefon.getText())) {
+			if (Util.esInt(tfTelefon.getText())) {
 				String sql = " insert into treballador values (?,?,?,?,?,?) ";
 				PreparedStatement st = Main.getConnection().prepareStatement(sql);
 				st.setString(1, tfDNI.getText());
@@ -44,7 +46,7 @@ public class TreballadorController {
 				st.setInt(5, Integer.parseInt(tfTelefon.getText()));
 				st.setString(6, tfCorreu.getText());
 				st.execute();
-				
+
 				Pane root = FXMLLoader.load(getClass().getResource("/application/MainController.fxml"));
 				Scene scene = new Scene(root);
 				Stage stage = (Stage) tfDNI.getScene().getWindow();

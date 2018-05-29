@@ -78,7 +78,7 @@ public class AgendaController {
 		});
 
 		dibuixarTaula();
-		emplenarTaula();
+		omplirTaula();
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class AgendaController {
 
 	}
 
-	private void emplenarTaula() {
+	private void omplirTaula() {
 		escriureACasella(0, 0, "HORA");
 
 		// Nom

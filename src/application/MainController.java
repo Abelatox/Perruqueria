@@ -15,6 +15,7 @@ public class MainController {
 
 	/**
 	 * Menu Agenda
+	 * 
 	 * @param event
 	 * @throws Exception
 	 */
@@ -25,9 +26,10 @@ public class MainController {
 		Stage stage = (Stage) btnAgenda.getScene().getWindow();
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
-	
+
 	/**
 	 * Menu Client
+	 * 
 	 * @param event
 	 * @throws Exception
 	 */
@@ -38,9 +40,10 @@ public class MainController {
 		Stage stage = (Stage) btnAgenda.getScene().getWindow();
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
-	
+
 	/**
 	 * Pantalla per afegir un treballador
+	 * 
 	 * @param event
 	 * @throws Exception
 	 */
@@ -51,7 +54,7 @@ public class MainController {
 		Stage stage = (Stage) btnAgenda.getScene().getWindow();
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
-	
+
 	public void initialize() {
 
 	}

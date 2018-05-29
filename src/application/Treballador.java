@@ -11,7 +11,7 @@ public class Treballador {
 		this.mail = mail;
 		this.tlf = tlf;
 	}
-	
+
 	public String getDni() {
 		return dni;
 	}

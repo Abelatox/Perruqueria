@@ -20,12 +20,12 @@ public class Main extends Application {
 		try {
 			Class.forName("org.postgresql.Driver");
 			con = DriverManager.getConnection("jdbc:postgresql://144.217.11.3/perruqueria", "pg", "dam");
-			
+
 			// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			Pane root = FXMLLoader.load(getClass().getResource("/application/LoginController.fxml"));
 			Scene scene = new Scene(root);
 			Util.openGUI(scene, primaryStage, Strings.TITLE_MAIN);
-		}catch(IOException e){
+		} catch (IOException e) {
 			System.out.println("Problema accedint al FXML");
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -36,7 +36,7 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static Connection getConnection() {
 		return con;
 	}

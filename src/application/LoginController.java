@@ -36,6 +36,7 @@ public class LoginController {
 
 	/**
 	 * Comprova si el login és vàl·lid i entra al menú principal
+	 * 
 	 * @param event
 	 * @throws Exception
 	 */
@@ -50,7 +51,9 @@ public class LoginController {
 	}
 
 	/**
-	 * Comprova si l'usuari existeix a la base de dades i si la contrassenya és correcta
+	 * Comprova si l'usuari existeix a la base de dades i si la contrassenya és
+	 * correcta
+	 * 
 	 * @param nick
 	 * @param pass
 	 * @return
