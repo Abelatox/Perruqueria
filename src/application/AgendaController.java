@@ -92,8 +92,7 @@ public class AgendaController {
 		ResultSet rs = st.executeQuery();
 
 		while (rs.next()) {
-			listTreballadors.add(
-					new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
+			listTreballadors.add(new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
 		}
 
 	}
@@ -136,14 +135,15 @@ public class AgendaController {
 			public void run() {
 				for (Treballador t : listTreballadors) {
 					try {
-						String consulta = " select dni, name, nick, telefon, correu from treballador ";
+						String consulta = " select dni, name, nick, telefon, correu from treballador where name = ?";
 						PreparedStatement st = Main.getConnection().prepareStatement(consulta);
+						st.setString(1, t.getNom());
 						ResultSet rs = st.executeQuery();
 
 						while (rs.next()) {
 							// TODO Posar les dades a les caselles corresponents
-							// (rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4),
-							// rs.getString(5));
+							System.out.println(rs.getString(1)+" "+ rs.getString(2) +" "+rs.getString(3)+" "+ rs.getInt(4)+" "+rs.getString(5));
+							
 						}
 
 					} catch (SQLException e) {
