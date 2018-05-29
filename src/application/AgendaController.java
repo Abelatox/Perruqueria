@@ -8,16 +8,21 @@ import java.util.ArrayList;
 
 import com.sun.javafx.tk.Toolkit;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class AgendaController {
+
+	@FXML
+	private Button btnBack;
 
 	@FXML
 	private Canvas canvas;
@@ -82,6 +87,20 @@ public class AgendaController {
 	}
 
 	/**
+	 * Per tornar al menú principal
+	 * 
+	 * @param event
+	 * @throws Exception
+	 */
+	@FXML
+	void btnBack(ActionEvent event) throws Exception {
+		Pane root = FXMLLoader.load(getClass().getResource("/application/MainController.fxml"));
+		Scene scene = new Scene(root);
+		Stage stage = (Stage) btnBack.getScene().getWindow();
+		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
+	}
+
+	/**
 	 * Obté i carrega les dades dels treballadors
 	 * 
 	 * @throws SQLException
@@ -92,7 +111,8 @@ public class AgendaController {
 		ResultSet rs = st.executeQuery();
 
 		while (rs.next()) {
-			listTreballadors.add(new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
+			listTreballadors.add(
+					new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
 		}
 
 	}
@@ -142,8 +162,9 @@ public class AgendaController {
 
 						while (rs.next()) {
 							// TODO Posar les dades a les caselles corresponents
-							System.out.println(rs.getString(1)+" "+ rs.getString(2) +" "+rs.getString(3)+" "+ rs.getInt(4)+" "+rs.getString(5));
-							
+							System.out.println(rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3) + " "
+									+ rs.getInt(4) + " " + rs.getString(5));
+
 						}
 
 					} catch (SQLException e) {

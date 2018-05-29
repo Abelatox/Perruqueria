@@ -111,6 +111,11 @@
                <font>
                   <Font size="24.0" />
                </font></Label>
+            <Button fx:id="btnBack" mnemonicParsing="false" onAction="#btnBack" prefHeight="88.0" prefWidth="716.0" text="BACK" GridPane.rowIndex="7">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Button>
 			</children>
 		</GridPane>
 	</center>

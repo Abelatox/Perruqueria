@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 public class TreballadorController {
 
 	@FXML
-	private Button btnRegistrar;
+	private Button btnRegistrar,btnBack;
 
 	@FXML
 	private TextField tfDNI, tfNom, tfNick, pfPassword, tfTelefon, tfCorreu;
@@ -55,5 +55,19 @@ public class TreballadorController {
 				Util.timedLabel("El telèfon no es un número", lblInfo, 2000);
 			}
 		}
+	}
+	
+	/**
+	 * Per tornar al menú principal
+	 * 
+	 * @param event
+	 * @throws Exception
+	 */
+	@FXML
+	void btnBack(ActionEvent event) throws Exception {
+		Pane root = FXMLLoader.load(getClass().getResource("/application/MainController.fxml"));
+		Scene scene = new Scene(root);
+		Stage stage = (Stage) btnBack.getScene().getWindow();
+		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
 }
