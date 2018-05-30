@@ -40,6 +40,8 @@ public class AgendaController {
 	int ROWS = 21;
 	int COLUMNS;
 
+	int HORA_INICI = 9;
+
 	ArrayList<Treballador> listTreballadors = new ArrayList<Treballador>();
 
 	static final int LINE_WIDTH = 2;
@@ -142,12 +144,12 @@ public class AgendaController {
 
 		// :00
 		for (int i = 0; i < ROWS / 2; i++) {
-			escriureACasella(0, (i + 1) * 2 - 1, 9 + i + ":00");
+			escriureACasella(0, (i + 1) * 2 - 1, HORA_INICI + i + ":00");
 		}
 
 		// :30
 		for (int i = 0; i < ROWS / 2; i++) {
-			escriureACasella(0, (i + 1) * 2, 9 + i + ":30");
+			escriureACasella(0, (i + 1) * 2, HORA_INICI + i + ":30");
 		}
 
 		// Dades dels treballadors
@@ -190,9 +192,17 @@ public class AgendaController {
 				col = i;
 			}
 		}
+		String[] time = a.horaInici.split(":");
+		int hora = Integer.parseInt(time[0]);
+		int min = Integer.parseInt(time[1]);
+		//System.out.println(hora + " " + min);
+
+		row = (hora - HORA_INICI) * 2;
+
+		row = min != 0 ? row+1 : row ; 
 		
-		
-		escriureACasella(col + 1, row, a.client);
+		//System.out.println(row);
+		escriureACasella(col + 1, row+ 1, a.client);
 	}
 
 	public void escriureACasella(int x, int y, String text) {
