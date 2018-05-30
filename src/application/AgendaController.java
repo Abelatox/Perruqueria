@@ -44,6 +44,8 @@ public class AgendaController {
 
 	ArrayList<Treballador> listTreballadors = new ArrayList<Treballador>();
 
+	ArrayList<Agenda> listAgenda = new ArrayList<Agenda>();
+
 	static final int LINE_WIDTH = 2;
 
 	public void initialize() throws SQLException {
@@ -71,7 +73,7 @@ public class AgendaController {
 			escriureACasella(casellaX, casellaY, "X");
 
 			// TODO eliminar funció
-			if (1 == 1) {
+			if (1 == 2) {
 				Pane root;
 				try {
 					root = FXMLLoader.load(getClass().getResource("/application/AgendaController.fxml"));
@@ -82,10 +84,42 @@ public class AgendaController {
 					e.printStackTrace();
 				}
 			}
+
+			if (casellaX > 0 && casellaX < listTreballadors.size() + 1 && casellaY > 0 && casellaY < ROWS) {
+				Agenda a = getAgendaFromCell(casellaX, casellaY);
+				if (a != null) {
+					System.out.println(a.client);
+				} else {
+					System.out.println("Nova cita");
+				}
+			}
 		});
 
 		dibuixarTaula();
 		omplirTaula();
+	}
+
+	private Agenda getAgendaFromCell(int casellaX, int casellaY) {
+		Treballador t = listTreballadors.get(casellaX - 1);
+		System.out.println(t.getNom());
+		int hora = (HORA_INICI + casellaY / 2);
+		int mins = 0;
+		if (casellaY % 2 == 0) {
+			hora--;
+			mins = 30;
+		}
+
+		// Formateja el temps
+		String time = (hora < 10 ? "0" + hora : hora) + ":" + (mins == 0 ? "00:00" : mins + ":00");
+
+		// Si la agenda coincideix en treballador i hora (columna i fila) la retorna
+		for (Agenda a : listAgenda) {
+			if (a.getHoraInici().equals(time) && a.getTreballador().equals(t.getDni())) {
+				return a;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -157,7 +191,7 @@ public class AgendaController {
 			public void run() {
 				for (Treballador t : listTreballadors) {
 					try {
-						//Seleccionem totes les dades en l'agenda d'un treballador en concret (bucle)
+						// Seleccionem totes les dades en l'agenda d'un treballador en concret (bucle)
 						String consulta = " select a.*,s.nom from treballador t inner join agenda a on t.dni = a.treballador inner join servei s on s.id=a.servei where a.data_servei = current_date and t.name = ? ";
 						PreparedStatement st = Main.getConnection().prepareStatement(consulta);
 						st.setString(1, t.getNom());
@@ -186,7 +220,9 @@ public class AgendaController {
 
 	/**
 	 * Posa una data a la casella a partir d'una agenda
-	 * @param a Agenda a introduïr
+	 * 
+	 * @param a
+	 *            Agenda a introduïr
 	 */
 	private void posarDataAAgenda(Agenda a) {
 		int col = -1;
@@ -200,21 +236,24 @@ public class AgendaController {
 		String[] time = a.horaInici.split(":");
 		int hora = Integer.parseInt(time[0]);
 		int min = Integer.parseInt(time[1]);
-		
-		//La fila serà la hora - la inicial (9) * 2 (hora i mitja hora)
+
+		// La fila serà la hora - la inicial (9) * 2 (hora i mitja hora)
 		row = (hora - HORA_INICI) * 2;
-		//Si els minuts son més de 0 la row incrementarà (:30)
+		// Si els minuts son més de 0 la row incrementarà (:30)
 		row = min != 0 ? row + 1 : row;
 
 		escriureACasella(col + 1, row + 1, a.client + " - " + a.servei);
+
+		listAgenda.add(a);
 	}
 
 	public void escriureACasella(int x, int y, String text) {
-		//Longitud (px) del text d'amplada
+		// Longitud (px) del text d'amplada
 		float width = Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
-		//Longitud (px) de la font d'alçada
+		// Longitud (px) de la font d'alçada
 		float height = Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
-		//Punt mig de la cel·la (longitud de la cel·la * num de cel·la + longitud de cel·la / 2.
+		// Punt mig de la cel·la (longitud de la cel·la * num de cel·la + longitud de
+		// cel·la / 2.
 		double XCENTER = LEFT_OFFSET + (x * CELLX + CELLX / 2);
 		double YCENTER = TOP_OFFSET + (y * CELLY + CELLY / 0.9F);
 		gc.fillText(text, XCENTER - width / 2, YCENTER - height / 2);
