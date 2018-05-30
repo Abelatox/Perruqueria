@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -48,6 +49,14 @@ public class AgendaController {
 
 	static final int LINE_WIDTH = 2;
 
+	enum PART {
+		TOP, BOTTOM
+	}
+
+	enum ALIGN {
+		TOP, CENTER, BOTTOM
+	}
+
 	public void initialize() throws SQLException {
 		SIZEX = canvas.getWidth() - RIGHT_OFFSET;
 		SIZEY = canvas.getHeight() - BOTTOM_OFFSET;
@@ -70,10 +79,10 @@ public class AgendaController {
 			int casellaX = (int) (x / CELLX);
 			int casellaY = (int) (y / CELLY);
 
-			escriureACasella(casellaX, casellaY, "X");
+			// escriureACasella(casellaX, casellaY, "X");
 
 			// TODO eliminar funció
-			if (1 == 2) {
+			if (1 == 1) {
 				Pane root;
 				try {
 					root = FXMLLoader.load(getClass().getResource("/application/AgendaController.fxml"));
@@ -84,6 +93,11 @@ public class AgendaController {
 					e.printStackTrace();
 				}
 			}
+
+			if (event.getButton() == MouseButton.PRIMARY)
+				pintarMitja(casellaX, casellaY, PART.TOP);
+			else if (event.getButton() == MouseButton.SECONDARY)
+				pintarMitja(casellaX, casellaY, PART.BOTTOM);
 
 			if (casellaX > 0 && casellaX < listTreballadors.size() + 1 && casellaY > 0 && casellaY < ROWS) {
 				Agenda a = getAgendaFromCell(casellaX, casellaY);
@@ -169,21 +183,21 @@ public class AgendaController {
 	}
 
 	private void omplirTaula() {
-		escriureACasella(0, 0, "HORA");
+		escriureACasella(0, 0, ALIGN.CENTER, "HORA");
 
 		// Nom
 		for (int i = 0; i < listTreballadors.size(); i++) {
-			escriureACasella(i + 1, 0, listTreballadors.get(i).getNom());
+			escriureACasella(i + 1, 0, ALIGN.CENTER, listTreballadors.get(i).getNom());
 		}
 
 		// :00
 		for (int i = 0; i < ROWS / 2; i++) {
-			escriureACasella(0, (i + 1) * 2 - 1, HORA_INICI + i + ":00");
+			escriureACasella(0, (i + 1) * 2 - 1, ALIGN.CENTER, HORA_INICI + i + ":00");
 		}
 
 		// :30
 		for (int i = 0; i < ROWS / 2; i++) {
-			escriureACasella(0, (i + 1) * 2, HORA_INICI + i + ":30");
+			escriureACasella(0, (i + 1) * 2, ALIGN.CENTER, HORA_INICI + i + ":30");
 		}
 
 		// Dades de la agenda
@@ -221,8 +235,7 @@ public class AgendaController {
 	/**
 	 * Posa una data a la casella a partir d'una agenda
 	 * 
-	 * @param a
-	 *            Agenda a introduïr
+	 * @param a Agenda a introduïr
 	 */
 	private void posarDataAAgenda(Agenda a) {
 		int col = -1;
@@ -242,11 +255,32 @@ public class AgendaController {
 		// Si els minuts son més de 0 la row incrementarà (:30)
 		row = min != 0 ? row + 1 : row;
 
-		escriureACasella(col + 1, row + 1, a.client + " - " + a.servei);
+		escriureACasella(col + 1, row + 1, ALIGN.TOP, a.client);
+		escriureACasella(col + 1, row + 1, ALIGN.BOTTOM, a.servei);
+
 
 		listAgenda.add(a);
 	}
 
+	public void pintarMitja(int x, int y, PART part) {
+		double row = LEFT_OFFSET + (x * CELLX);
+		double col = TOP_OFFSET + (y * CELLY);
+		gc.setFill(Color.rgb(255, 0, 0));
+
+		if (part == PART.TOP)
+			gc.fillRect(row + LINE_WIDTH, col + LINE_WIDTH, CELLX - LINE_WIDTH, CELLY / 2 - LINE_WIDTH / 2);
+		else
+			gc.fillRect(row + LINE_WIDTH, col + CELLY / 2 + LINE_WIDTH / 2, CELLX - LINE_WIDTH,
+					CELLY / 2 - LINE_WIDTH / 2);
+	}
+
+	/**
+	 * Escriu un text centrat a una casella
+	 * 
+	 * @param x
+	 * @param y
+	 * @param text
+	 */
 	public void escriureACasella(int x, int y, String text) {
 		// Longitud (px) del text d'amplada
 		float width = Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
@@ -255,7 +289,37 @@ public class AgendaController {
 		// Punt mig de la cel·la (longitud de la cel·la * num de cel·la + longitud de
 		// cel·la / 2.
 		double XCENTER = LEFT_OFFSET + (x * CELLX + CELLX / 2);
-		double YCENTER = TOP_OFFSET + (y * CELLY + CELLY / 0.9F);
+		double YCENTER = TOP_OFFSET + (y * CELLY + CELLY / 1.05);
+		gc.fillText(text, XCENTER - width / 2, YCENTER - height / 2);
+	}
+	
+	/**
+	 * Escriu un text centrat alineat a una casella
+	 * 
+	 * @param x
+	 * @param y
+	 * @param text
+	 */
+	public void escriureACasella(int x, int y, ALIGN align, String text) {
+		// Longitud (px) del text d'amplada
+		float width = Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
+		// Longitud (px) de la font d'alçada
+		float height = Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
+		// Punt mig de la cel·la (longitud de la cel·la * num de cel·la + longitud de
+		// cel·la / 2.
+		double XCENTER = LEFT_OFFSET + (x * CELLX + CELLX / 2);
+		double yOffset = 0;
+		switch (align) {
+		case TOP:
+			yOffset = 1.3;
+			break;
+		case CENTER:
+			yOffset = 1.05;
+			break;
+		case BOTTOM:
+			yOffset = 0.8;
+		}
+		double YCENTER = TOP_OFFSET + (y * CELLY + CELLY / yOffset);
 		gc.fillText(text, XCENTER - width / 2, YCENTER - height / 2);
 	}
 
