@@ -155,15 +155,18 @@ public class AgendaController {
 			public void run() {
 				for (Treballador t : listTreballadors) {
 					try {
-						String consulta = " select dni, name, nick, telefon, correu from treballador where name = ?";
+						String consulta = " select a.* from treballador t inner join agenda a on t.dni = a.treballador inner join servei s on s.id=a.servei where a.data_servei = current_date and t.name = ? ";
 						PreparedStatement st = Main.getConnection().prepareStatement(consulta);
 						st.setString(1, t.getNom());
 						ResultSet rs = st.executeQuery();
 
 						while (rs.next()) {
 							// TODO Posar les dades a les caselles corresponents
-							System.out.println(rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3) + " "
-									+ rs.getInt(4) + " " + rs.getString(5));
+							Agenda a = new Agenda(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+									rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8));
+							posarDataAAgenda(a);
+							System.out.println(a.dataServei + " " + a.horaInici + " "
+									+ (a.clientGuardat == -1 ? a.client : a.clientGuardat));
 
 						}
 
@@ -173,8 +176,23 @@ public class AgendaController {
 
 				}
 			}
+
 		}.start();
 
+	}
+
+	private void posarDataAAgenda(Agenda a) {
+		int col = -1;
+		int row = 6;
+
+		for (int i = 0; i < listTreballadors.size(); i++) {
+			if (listTreballadors.get(i).getDni().equals(a.treballador)) {
+				col = i;
+			}
+		}
+		
+		
+		escriureACasella(col + 1, row, a.client);
 	}
 
 	public void escriureACasella(int x, int y, String text) {
