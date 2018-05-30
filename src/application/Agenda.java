@@ -12,7 +12,7 @@ public class Agenda {
 	int clientGuardat;
 	String nomServei;
 	
-	public Agenda(String horaTrucada, String client, String servei, String dataServei, String horaInici, String horaFi, String treballador, int clientGuardat, String nomServei) {
+	public Agenda(String horaTrucada, String client, String servei, String dataServei, String horaInici, String horaFi, String treballador, int clientGuardat) {
 		this.horaTrucada = horaTrucada;
 		this.client = client;
 		this.servei = servei;
@@ -21,7 +21,6 @@ public class Agenda {
 		this.horaFi = horaFi;
 		this.treballador = treballador;
 		this.clientGuardat = clientGuardat;
-		this.nomServei = nomServei;
 	}
 	
 	public String getHoraTrucada() {

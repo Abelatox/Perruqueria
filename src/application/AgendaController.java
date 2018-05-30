@@ -152,44 +152,45 @@ public class AgendaController {
 			escriureACasella(0, (i + 1) * 2, HORA_INICI + i + ":30");
 		}
 
-		// Dades dels treballadors
+		// Dades de la agenda
 		new Thread() {
 			public void run() {
 				for (Treballador t : listTreballadors) {
 					try {
+						//Seleccionem totes les dades en l'agenda d'un treballador en concret (bucle)
 						String consulta = " select a.*,s.nom from treballador t inner join agenda a on t.dni = a.treballador inner join servei s on s.id=a.servei where a.data_servei = current_date and t.name = ? ";
 						PreparedStatement st = Main.getConnection().prepareStatement(consulta);
 						st.setString(1, t.getNom());
 						ResultSet rs = st.executeQuery();
 
 						while (rs.next()) {
-							// TODO Posar les dades a les caselles corresponents
-							String servei = (rs.getString(9));
+							// Posem les dades a les caselles corresponents
 							Agenda a = new Agenda(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
-									rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8), servei);
-							a.setServei(servei);//No funcionava en el constructor
-							System.out.println(a.servei);
+									rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8));
+							a.setServei(rs.getString(9));// No funcionava en el constructor
 							posarDataAAgenda(a);
-							
-							/*System.out.println(a.dataServei + " " + a.horaInici + " "
-									+ (a.clientGuardat == -1 ? a.client : a.clientGuardat));*/
 
+							/*
+							 * System.out.println(a.dataServei + " " + a.horaInici + " " + (a.clientGuardat
+							 * == -1 ? a.client : a.clientGuardat));
+							 */
 						}
 
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
-
 				}
 			}
-
 		}.start();
-
 	}
 
+	/**
+	 * Posa una data a la casella a partir d'una agenda
+	 * @param a Agenda a introduïr
+	 */
 	private void posarDataAAgenda(Agenda a) {
 		int col = -1;
-		int row = 6;
+		int row = -1;
 
 		for (int i = 0; i < listTreballadors.size(); i++) {
 			if (listTreballadors.get(i).getDni().equals(a.treballador)) {
@@ -199,19 +200,21 @@ public class AgendaController {
 		String[] time = a.horaInici.split(":");
 		int hora = Integer.parseInt(time[0]);
 		int min = Integer.parseInt(time[1]);
-		// System.out.println(hora + " " + min);
-
+		
+		//La fila serà la hora - la inicial (9) * 2 (hora i mitja hora)
 		row = (hora - HORA_INICI) * 2;
-
+		//Si els minuts son més de 0 la row incrementarà (:30)
 		row = min != 0 ? row + 1 : row;
 
-		// System.out.println(row);
-		escriureACasella(col + 1, row + 1, a.client+" - "+a.servei);
+		escriureACasella(col + 1, row + 1, a.client + " - " + a.servei);
 	}
 
 	public void escriureACasella(int x, int y, String text) {
+		//Longitud (px) del text d'amplada
 		float width = Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
+		//Longitud (px) de la font d'alçada
 		float height = Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
+		//Punt mig de la cel·la (longitud de la cel·la * num de cel·la + longitud de cel·la / 2.
 		double XCENTER = LEFT_OFFSET + (x * CELLX + CELLX / 2);
 		double YCENTER = TOP_OFFSET + (y * CELLY + CELLY / 0.9F);
 		gc.fillText(text, XCENTER - width / 2, YCENTER - height / 2);
