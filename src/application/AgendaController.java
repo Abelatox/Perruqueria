@@ -384,8 +384,14 @@ public class AgendaController {
 		for(int i=0;i<temps;i++) {
 			pintarCasella(col + 1, row + 1+i);
 		}
-		
-		escriureACasella(col + 1, row + 1, ALIGN.TOP, a.getClient());
+
+		if(a.getClientGuardat()>-1) {
+			int cGuardat = a.getClientGuardat();
+
+			escriureACasella(col + 1, row + 1, ALIGN.TOP, listClients.get(cGuardat).getNom());
+		} else {
+			escriureACasella(col + 1, row + 1, ALIGN.TOP, a.getClient());
+		}
 		escriureACasella(col + 1, row + 1, ALIGN.BOTTOM, a.getServei());
 
 		listAgenda.add(a);
@@ -400,16 +406,16 @@ public class AgendaController {
 	private int getDiferencia(String horaInici, String horaFi) {
 		String[] timeInici = horaInici.split(":");
 		String[] timeFi = horaFi.split(":");
-		
+
 		int horaInicial = Integer.parseInt(timeInici[0]);
 		int minInicial = Integer.parseInt(timeInici[1]);
-		
+
 		int horaFinal = Integer.parseInt(timeFi[0]);
 		int minFinal = Integer.parseInt(timeFi[1]);
-		
+
 		int hores = Math.abs(horaFinal - horaInicial);
 		int minuts = Math.abs(minFinal - minInicial);
-		
+
 		System.out.println(hores+":"+minuts);
 		return hores+(minuts == 0 ? 0 : 1);
 	}
