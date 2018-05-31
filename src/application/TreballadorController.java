@@ -52,13 +52,13 @@ public class TreballadorController {
 				Stage stage = (Stage) tfDNI.getScene().getWindow();
 				Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 			} else {
-				Util.timedLabel("El telèfon no es un número", lblInfo, 2000);
+				Util.timedLabel("El telï¿½fon no es un nï¿½mero", lblInfo, 2000);
 			}
 		}
 	}
 	
 	/**
-	 * Per tornar al menú principal
+	 * Per tornar al menï¿½ principal
 	 * 
 	 * @param event
 	 * @throws Exception
