@@ -26,6 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 public class AgendaController {
@@ -241,14 +242,24 @@ public class AgendaController {
 	 * @throws SQLException
 	 */
 	private void getClients() throws SQLException {
-		String consulta = " select id, name, sexe, telefon, correu from client ";
-		PreparedStatement st = Main.getConnection().prepareStatement(consulta);
-		ResultSet rs = st.executeQuery();
+		new Thread() {
+			public void run() {
+				String consulta = " select id, name, sexe, telefon, correu from client ";
+				PreparedStatement st;
+				try {
+					st = Main.getConnection().prepareStatement(consulta);
+					ResultSet rs = st.executeQuery();
 
-		while (rs.next()) {
-			listClients
-					.add(new Client(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
-		}
+					while (rs.next()) {
+						listClients.add(new Client(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+								rs.getString(5)));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+
+			}
+		}.start();
 
 	}
 
@@ -258,13 +269,23 @@ public class AgendaController {
 	 * @throws SQLException
 	 */
 	private void getServeis() throws SQLException {
-		String consulta = " select id,nom from servei ";
-		PreparedStatement st = Main.getConnection().prepareStatement(consulta);
-		ResultSet rs = st.executeQuery();
+		new Thread() {
+			public void run() {
+				String consulta = " select id,nom from servei ";
+				PreparedStatement st;
+				try {
+					st = Main.getConnection().prepareStatement(consulta);
 
-		while (rs.next()) {
-			listServeis.add(new Servei(rs.getInt(1), rs.getString(2)));
-		}
+					ResultSet rs = st.executeQuery();
+
+					while (rs.next()) {
+						listServeis.add(new Servei(rs.getInt(1), rs.getString(2)));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
 
 	}
 
@@ -310,22 +331,21 @@ public class AgendaController {
 						String consulta = " select a.*,s.nom from treballador t inner join agenda a on t.dni = a.treballador inner join servei s on s.id=a.servei where a.data_servei = ? and t.name = ? ";
 						PreparedStatement st = Main.getConnection().prepareStatement(consulta);
 						System.out.println(dpData.getValue());
-						java.util.Date date = java.sql.Date.valueOf(dpData.getValue());
-						st.setDate(1, (java.sql.Date) date);
+						java.sql.Date date = java.sql.Date.valueOf(dpData.getValue());
+						st.setDate(1, date);
 						st.setString(2, t.getNom());
 						ResultSet rs = st.executeQuery();
 
 						while (rs.next()) {
 							// Posem les dades a les caselles corresponents
+							for(int i=1;i<8;i++)
+								System.out.println(i+"- "+rs.getString(i));
+							System.out.println(8+"- "+rs.getString(8));
+							//String nom
 							Agenda a = new Agenda(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
 									rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8));
 							a.setServei(rs.getString(9));// No funcionava en el constructor
 							posarDataAAgenda(a);
-
-							/*
-							 * System.out.println(a.dataServei + " " + a.horaInici + " " + (a.clientGuardat
-							 * == -1 ? a.client : a.clientGuardat));
-							 */
 						}
 
 					} catch (SQLException e) {
@@ -357,25 +377,75 @@ public class AgendaController {
 
 		// La fila ser� la hora - la inicial (9) * 2 (hora i mitja hora)
 		row = (hora - HORA_INICI) * 2;
-		// Si els minuts son m�s de 0 la row incrementar� (:30)
+		// Si els minuts son mes de 0 la row incrementa (:30)
 		row = min != 0 ? row + 1 : row;
 
+		int temps = getDiferencia(a.getHoraInici(),a.getHoraFi());
+		for(int i=0;i<temps;i++) {
+			pintarCasella(col + 1, row + 1+i);
+		}
+		
 		escriureACasella(col + 1, row + 1, ALIGN.TOP, a.getClient());
 		escriureACasella(col + 1, row + 1, ALIGN.BOTTOM, a.getServei());
 
 		listAgenda.add(a);
 	}
 
+	/**
+	 * Retorna la diferencia entre 2 hores
+	 * @param horaInici
+	 * @param horaFi
+	 * @return
+	 */
+	private int getDiferencia(String horaInici, String horaFi) {
+		String[] timeInici = horaInici.split(":");
+		String[] timeFi = horaFi.split(":");
+		
+		int horaInicial = Integer.parseInt(timeInici[0]);
+		int minInicial = Integer.parseInt(timeInici[1]);
+		
+		int horaFinal = Integer.parseInt(timeFi[0]);
+		int minFinal = Integer.parseInt(timeFi[1]);
+		
+		int hores = Math.abs(horaFinal - horaInicial);
+		int minuts = Math.abs(minFinal - minInicial);
+		
+		System.out.println(hores+":"+minuts);
+		return hores+(minuts == 0 ? 0 : 1);
+	}
+
+	/**
+	 * Pinta mitja casella
+	 * 
+	 * @param x
+	 * @param y
+	 * @param part
+	 */
 	public void pintarMitja(int x, int y, PART part) {
-		double row = LEFT_OFFSET + (x * CELLX);
-		double col = TOP_OFFSET + (y * CELLY);
+		double col = LEFT_OFFSET + (x * CELLX);
+		double row = TOP_OFFSET + (y * CELLY);
 		gc.setFill(Color.rgb(255, 0, 0));
 
 		if (part == PART.TOP)
-			gc.fillRect(row + LINE_WIDTH, col + LINE_WIDTH, CELLX - LINE_WIDTH, CELLY / 2 - LINE_WIDTH / 2);
+			gc.fillRect(col + LINE_WIDTH, row + LINE_WIDTH, CELLX - LINE_WIDTH, CELLY / 2 - LINE_WIDTH / 2);
 		else
-			gc.fillRect(row + LINE_WIDTH, col + CELLY / 2 + LINE_WIDTH / 2, CELLX - LINE_WIDTH,
+			gc.fillRect(col + LINE_WIDTH, row + CELLY / 2 + LINE_WIDTH / 2, CELLX - LINE_WIDTH,
 					CELLY / 2 - LINE_WIDTH / 2);
+	}
+
+	/**
+	 * Pinta casella
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public void pintarCasella(int x, int y) {
+		double col = LEFT_OFFSET + (x * CELLX);
+		double row = TOP_OFFSET + (y * CELLY);
+		Paint old = gc.getFill();
+		gc.setFill(Color.rgb(255, 0, 0));
+		gc.fillRect(col + LINE_WIDTH, row + LINE_WIDTH, CELLX - LINE_WIDTH, CELLY - LINE_WIDTH);
+		gc.setFill(old);
 	}
 
 	/**
