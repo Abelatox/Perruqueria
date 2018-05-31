@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.DriverManager;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.sun.javafx.tk.Toolkit;
 
@@ -15,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -24,6 +29,8 @@ public class AgendaController {
 
 	@FXML
 	private Button btnBack;
+	@FXML
+	private DatePicker dpData;
 
 	@FXML
 	private Canvas canvas;
@@ -62,11 +69,13 @@ public class AgendaController {
 		SIZEY = canvas.getHeight() - BOTTOM_OFFSET;
 
 		getTreballadors();
+		
+		dpData.setValue(LocalDate.now());
 
-		// Nº Columnes = una per treballador + una per hores
+		// Nï¿½ Columnes = una per treballador + una per hores
 		COLUMNS = listTreballadors.size() + 1;
 
-		// Mida en píxels de cada cel·la individual
+		// Mida en pï¿½xels de cada celï¿½la individual
 		CELLX = SIZEX / COLUMNS;
 		CELLY = SIZEY / ROWS;
 
@@ -81,7 +90,7 @@ public class AgendaController {
 
 			// escriureACasella(casellaX, casellaY, "X");
 
-			// TODO eliminar funció
+			// TODO eliminar funciï¿½
 			if (1 == 1) {
 				Pane root;
 				try {
@@ -111,7 +120,8 @@ public class AgendaController {
 
 		dibuixarTaula();
 		omplirTaula();
-	}
+	
+		};
 
 	private Agenda getAgendaFromCell(int casellaX, int casellaY) {
 		Treballador t = listTreballadors.get(casellaX - 1);
@@ -137,7 +147,7 @@ public class AgendaController {
 	}
 
 	/**
-	 * Per tornar al menú principal
+	 * Per tornar al menï¿½ principal
 	 * 
 	 * @param event
 	 * @throws Exception
@@ -149,9 +159,24 @@ public class AgendaController {
 		Stage stage = (Stage) btnBack.getScene().getWindow();
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
+	
+	/**
+	 * Canvia el dia del calendari actualitzar els events del calendari
+	 * 
+	 * @param event
+	 * @throws Exception
+	 */
+	@FXML
+	void dpData(ActionEvent event) throws Exception {
+		System.out.println(dpData.getValue());
+		gc.clearRect(0, 0, SIZEX, SIZEY);
+		dibuixarTaula();
+		omplirTaula();
+	}
+
 
 	/**
-	 * Obté i carrega les dades dels treballadors
+	 * Obtï¿½ i carrega les dades dels treballadors
 	 * 
 	 * @throws SQLException
 	 */
@@ -206,9 +231,12 @@ public class AgendaController {
 				for (Treballador t : listTreballadors) {
 					try {
 						// Seleccionem totes les dades en l'agenda d'un treballador en concret (bucle)
-						String consulta = " select a.*,s.nom from treballador t inner join agenda a on t.dni = a.treballador inner join servei s on s.id=a.servei where a.data_servei = current_date and t.name = ? ";
+						String consulta = " select a.*,s.nom from treballador t inner join agenda a on t.dni = a.treballador inner join servei s on s.id=a.servei where a.data_servei = ? and t.name = ? ";
 						PreparedStatement st = Main.getConnection().prepareStatement(consulta);
-						st.setString(1, t.getNom());
+						System.out.println(dpData.getValue());
+						java.util.Date date = java.sql.Date.valueOf(dpData.getValue());
+						st.setDate(1,(java.sql.Date) date);
+						st.setString(2, t.getNom());
 						ResultSet rs = st.executeQuery();
 
 						while (rs.next()) {
@@ -235,7 +263,7 @@ public class AgendaController {
 	/**
 	 * Posa una data a la casella a partir d'una agenda
 	 * 
-	 * @param a Agenda a introduïr
+	 * @param a Agenda a introduï¿½r
 	 */
 	private void posarDataAAgenda(Agenda a) {
 		int col = -1;
@@ -250,9 +278,9 @@ public class AgendaController {
 		int hora = Integer.parseInt(time[0]);
 		int min = Integer.parseInt(time[1]);
 
-		// La fila serà la hora - la inicial (9) * 2 (hora i mitja hora)
+		// La fila serï¿½ la hora - la inicial (9) * 2 (hora i mitja hora)
 		row = (hora - HORA_INICI) * 2;
-		// Si els minuts son més de 0 la row incrementarà (:30)
+		// Si els minuts son mï¿½s de 0 la row incrementarï¿½ (:30)
 		row = min != 0 ? row + 1 : row;
 
 		escriureACasella(col + 1, row + 1, ALIGN.TOP, a.client);
@@ -284,10 +312,10 @@ public class AgendaController {
 	public void escriureACasella(int x, int y, String text) {
 		// Longitud (px) del text d'amplada
 		float width = Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
-		// Longitud (px) de la font d'alçada
+		// Longitud (px) de la font d'alï¿½ada
 		float height = Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
-		// Punt mig de la cel·la (longitud de la cel·la * num de cel·la + longitud de
-		// cel·la / 2.
+		// Punt mig de la celï¿½la (longitud de la celï¿½la * num de celï¿½la + longitud de
+		// celï¿½la / 2.
 		double XCENTER = LEFT_OFFSET + (x * CELLX + CELLX / 2);
 		double YCENTER = TOP_OFFSET + (y * CELLY + CELLY / 1.05);
 		gc.fillText(text, XCENTER - width / 2, YCENTER - height / 2);
@@ -303,10 +331,10 @@ public class AgendaController {
 	public void escriureACasella(int x, int y, ALIGN align, String text) {
 		// Longitud (px) del text d'amplada
 		float width = Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
-		// Longitud (px) de la font d'alçada
+		// Longitud (px) de la font d'alï¿½ada
 		float height = Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
-		// Punt mig de la cel·la (longitud de la cel·la * num de cel·la + longitud de
-		// cel·la / 2.
+		// Punt mig de la celï¿½la (longitud de la celï¿½la * num de celï¿½la + longitud de
+		// celï¿½la / 2.
 		double XCENTER = LEFT_OFFSET + (x * CELLX + CELLX / 2);
 		double yOffset = 0;
 		switch (align) {
