@@ -1,10 +1,14 @@
 package application;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -24,7 +28,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -54,7 +57,7 @@ public class AgendaController {
 	double CELLX;
 	double CELLY;
 
-	int ROWS = 21;
+	int ROWS = 20;
 	int COLUMNS;
 
 	int HORA_INICI = 9;
@@ -116,21 +119,21 @@ public class AgendaController {
 				}
 			}
 
-			/*if (event.getButton() == MouseButton.PRIMARY)
-				pintarMitja(casellaX, casellaY, PART.TOP);
-			else if (event.getButton() == MouseButton.SECONDARY)
-				pintarMitja(casellaX, casellaY, PART.BOTTOM);
+			/*
+			 * if (event.getButton() == MouseButton.PRIMARY) pintarMitja(casellaX, casellaY,
+			 * PART.TOP); else if (event.getButton() == MouseButton.SECONDARY)
+			 * pintarMitja(casellaX, casellaY, PART.BOTTOM);
 			 */
 			if (casellaX > 0 && casellaX < listTreballadors.size() + 1 && casellaY > 0 && casellaY < ROWS) {
 				Agenda a = getAgendaFromCell(casellaX, casellaY);
 				if (a != null) {
-					//System.out.println(a.getClient());
+					// System.out.println(a.getClient());
 				} else {
 					String time = getTimeFromCell(casellaY);
 
 					tfHoraInici.setText(time);
 					dpDataVisita.setValue(dpData.getValue());
-					cTreballdor.setValue(listTreballadors.get(casellaX-1).getNom());
+					cTreballdor.setValue(listTreballadors.get(casellaX - 1).getNom());
 				}
 			}
 		});
@@ -214,84 +217,61 @@ public class AgendaController {
 	void btnGuardar(ActionEvent event) throws Exception {
 		System.out.println("Hola");
 
-		if(cClient.getValue()!=null) {
+		String sql = " insert into agenda (moment_trucada,servei,data_servei,hora_inici,hora_fi,treballador,client,client_guardat) values (?,?,?,?,?,?,?,?) ";
+		PreparedStatement st = Main.getConnection().prepareStatement(sql);
+		int numS = -1;
+		int numC = -1;
+		String numT = "";
 
-			String sql = " insert into agenda (moment_trucada,servei,data_servei,hora_inici,hora_fi,treballador,client_guardat) values (?,?,?,?,?,?) ";
-			PreparedStatement st = Main.getConnection().prepareStatement(sql);
-			int numS = -1;
-			int numC = -1;
-			String numT = "";
-
-			for(int i = 0;i<listServeis.size();i++) {
-				if(cServei.getValue().equals(listServeis.get(i).getNom())) {
-					numS = i;
-					break;
-				}
+		// Troba el numero del servei a partir del nom
+		for (int i = 0; i < listServeis.size(); i++) {
+			if (cServei.getValue().equals(listServeis.get(i).getNom())) {
+				numS = i + 1;
+				break;
 			}
-
-			if(cClient.getValue()!=null) {
-				for(int i = 0;i<listClients.size();i++) {
-					if(cClient.getValue().equals(listClients.get(i).getNom())) {
-						numC = i;
-						break;
-					}
-				}
-			}
-
-
-			for(int i = 0;i<listTreballadors.size();i++) {
-				if(cTreballdor.getValue().equals(listTreballadors.get(i).getNom())) {
-					numT = listTreballadors.get(i).getDni();
-					break;
-				}
-			}
-
-			java.sql.Date date = java.sql.Date.valueOf(dpDataVisita.getValue());
-
-			st.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-			st.setInt(2, numS);
-			st.setDate(3, date);
-			st.setString(4, tfHoraInici.getText());
-			st.setString(5, tfHoraFi.getText());
-			st.setString(6, numT);
-			st.setInt(7, numC);
-			st.execute();
-
-		} else {
-			
-			String sql = " insert into agenda (moment_trucada,client,servei,data_servei,hora_inici,hora_fi,treballador) values (?,?,?,?,?) ";
-			PreparedStatement st = Main.getConnection().prepareStatement(sql);
-			int numS = -1;
-			int numC = -1;
-			String numT = "";
-
-			for(int i = 0;i<listServeis.size();i++) {
-				if(cServei.getValue().equals(listServeis.get(i).getNom())) {
-					numS = i;
-					break;
-				}
-			}
-
-			for(int i = 0;i<listTreballadors.size();i++) {
-				if(cTreballdor.getValue().equals(listTreballadors.get(i).getNom())) {
-					numT = listTreballadors.get(i).getDni();
-					break;
-				}
-			}
-
-			java.sql.Date date = java.sql.Date.valueOf(dpDataVisita.getValue());
-
-			st.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-			st.setString(2, tfClient.getText());
-			st.setInt(3, numS);
-			st.setDate(4, date);
-			st.setString(5, tfHoraInici.getText());
-			st.setString(6, tfHoraFi.getText());
-			st.setString(7, numT);
-			st.execute();
 		}
 
+		if (cClient.getValue() != null) {
+			// Troba el numero del client a partir del nom
+			for (int i = 0; i < listClients.size(); i++) {
+				if (cClient.getValue().equals(listClients.get(i).getNom())) {
+					numC = i + 1;
+					break;
+				}
+			}
+		}
 
+		// Troba el DNI del treballador a partir del nom
+		for (int i = 0; i < listTreballadors.size(); i++) {
+			if (cTreballdor.getValue().equals(listTreballadors.get(i).getNom())) {
+				numT = listTreballadors.get(i).getDni();
+				break;
+			}
+		}
+
+		Date date = Date.valueOf(dpDataVisita.getValue());
+		DateFormat formatter = new SimpleDateFormat("HH:mm");
+
+		st.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+		st.setInt(2, numS);
+		st.setDate(3, date);
+		st.setTime(4, new Time(formatter.parse(tfHoraInici.getText()).getTime()));
+		st.setTime(5, new Time(formatter.parse(tfHoraFi.getText()).getTime()));
+		st.setString(6, numT);
+		System.out.println(numT);
+		if (numC > -1) {
+			st.setString(7, "");
+			st.setInt(8, numC);
+		} else {
+			st.setString(7, tfClient.getText());
+			st.setInt(8, numC);
+		}
+		st.execute();
+		System.out.println("Insertat");
+
+		gc.clearRect(0, 0, SIZEX, SIZEY);
+		dibuixarTaula();
+		omplirTaula();
 
 	}
 
@@ -316,14 +296,13 @@ public class AgendaController {
 	 */
 	private void getTreballadors() throws SQLException {
 
-
 	}
 
 	/**
 	 * Obte i carrega les dades dels clients
 	 * 
 	 * @throws SQLException
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	private void getDades() throws SQLException, InterruptedException {
 		Thread clients = new Thread() {
@@ -377,8 +356,8 @@ public class AgendaController {
 					ResultSet rs = st.executeQuery();
 
 					while (rs.next()) {
-						listTreballadors.add(
-								new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
+						listTreballadors.add(new Treballador(rs.getString(1), rs.getString(2), rs.getString(3),
+								rs.getInt(4), rs.getString(5)));
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -412,19 +391,19 @@ public class AgendaController {
 	private void omplirTaula() {
 		escriureACasella(0, 0, ALIGN.CENTER, "HORA");
 
-		// Nom
+		// Nom Treballadors
 		for (int i = 0; i < listTreballadors.size(); i++) {
 			escriureACasella(i + 1, 0, ALIGN.CENTER, listTreballadors.get(i).getNom());
 		}
 
-		// :00
+		// :00 - :30
 		for (int i = 0; i < ROWS / 2; i++) {
-			escriureACasella(0, (i + 1) * 2 - 1, ALIGN.CENTER, HORA_INICI + i + ":00");
+			escriureACasella(0, (i + 1) * 2 - 1, ALIGN.CENTER, HORA_INICI + i + ":00 - " + (HORA_INICI + i) + ":30");
 		}
 
-		// :30
-		for (int i = 0; i < ROWS / 2; i++) {
-			escriureACasella(0, (i + 1) * 2, ALIGN.CENTER, HORA_INICI + i + ":30");
+		// :30 - :00
+		for (int i = 0; i < ROWS / 2-1; i++) {
+			escriureACasella(0, (i + 1) * 2, ALIGN.CENTER, HORA_INICI + i + ":30" + "-" + (HORA_INICI + i + 1) + ":00");
 		}
 
 		// Dades de la agenda
@@ -486,12 +465,13 @@ public class AgendaController {
 		row = min != 0 ? row + 1 : row;
 
 		int temps = getDiferencia(a.getHoraInici(), a.getHoraFi());
+		System.out.println(col + " " + temps);
 		for (int i = 0; i < temps; i++) {
 			pintarCasella(col + 1, row + 1 + i);
 		}
 
 		if (a.getClientGuardat() > -1) {
-			int cGuardat = a.getClientGuardat()-1;
+			int cGuardat = a.getClientGuardat() - 1;
 			escriureACasella(col + 1, row + 1, ALIGN.TOP, listClients.get(cGuardat).getNom());
 		} else {
 			escriureACasella(col + 1, row + 1, ALIGN.TOP, a.getClient());
@@ -522,7 +502,9 @@ public class AgendaController {
 		int minuts = Math.abs(minFinal - minInicial);
 
 		// System.out.println(hores+":"+minuts);
-		return hores + (minuts == 0 ? 0 : 1);
+		int temps = hores * 2 + (minuts == 0 ? 0 : 1);
+		System.out.println(horaFinal + "-" + horaInicial + ": " + hores);
+		return temps;
 	}
 
 	/**
