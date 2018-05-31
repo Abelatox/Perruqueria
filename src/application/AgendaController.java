@@ -9,9 +9,12 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Observable;
 
 import com.sun.javafx.tk.Toolkit;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,18 +22,26 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class AgendaController {
+	
+	
 
 	@FXML
-	private Button btnBack;
+	private Button btnBack,btnGuardar;
 	@FXML
-	private DatePicker dpData;
+	private DatePicker dpData,dpDataVisita;
+	@FXML
+	private TextField tfHoraInici,tfHoraFi,tfClient;
+	@FXML
+	private ComboBox<String> cClient,cServei,cTreballdor;
 
 	@FXML
 	private Canvas canvas;
@@ -51,6 +62,10 @@ public class AgendaController {
 	int HORA_INICI = 9;
 
 	ArrayList<Treballador> listTreballadors = new ArrayList<Treballador>();
+	
+	ArrayList<Serveis> listServeis = new ArrayList<Serveis>();
+	
+	ArrayList<Client> listClients = new ArrayList<Client>();
 
 	ArrayList<Agenda> listAgenda = new ArrayList<Agenda>();
 
@@ -69,6 +84,8 @@ public class AgendaController {
 		SIZEY = canvas.getHeight() - BOTTOM_OFFSET;
 
 		getTreballadors();
+		getClients();
+		getServeis();
 		
 		dpData.setValue(LocalDate.now());
 
@@ -117,6 +134,26 @@ public class AgendaController {
 				}
 			}
 		});
+	
+		ArrayList<String> tNom = new ArrayList<>();
+		for (Treballador t : listTreballadors) {
+			tNom.add(t.getNom());
+		}
+		
+		cTreballdor.getItems().addAll(tNom);
+		
+		ArrayList<String> sNom = new ArrayList<>();
+		for (Serveis s : listServeis) {
+			sNom.add(s.getNom());
+		}
+		
+		cServei.getItems().addAll(sNom);
+		
+		ArrayList<String> cNom = new ArrayList<>();
+		for (Client c : listClients) {
+			cNom.add(c.getNom());
+		}
+		cClient.getItems().addAll(cNom);
 
 		dibuixarTaula();
 		omplirTaula();
@@ -161,6 +198,17 @@ public class AgendaController {
 	}
 	
 	/**
+	 * Per posar una cita.
+	 * 
+	 * @param event
+	 * @throws Exception
+	 */
+	@FXML
+	void btnGuardar(ActionEvent event) throws Exception {
+		System.out.println("Hola");
+	}
+	
+	/**
 	 * Canvia el dia del calendari actualitzar els events del calendari
 	 * 
 	 * @param event
@@ -188,6 +236,40 @@ public class AgendaController {
 		while (rs.next()) {
 			listTreballadors.add(
 					new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
+		}
+
+	}
+	
+	/**
+	 * Obte i carrega les dades dels clients
+	 * 
+	 * @throws SQLException
+	 */
+	private void getClients() throws SQLException {
+		String consulta = " select id, name, sexe, telefon, correu from client ";
+		PreparedStatement st = Main.getConnection().prepareStatement(consulta);
+		ResultSet rs = st.executeQuery();
+
+		while (rs.next()) {
+			listClients.add(
+					new Client(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
+		}
+
+	}
+	
+	/**
+	 * Obte i carrega les dades dels serveis
+	 * 
+	 * @throws SQLException
+	 */
+	private void getServeis() throws SQLException {
+		String consulta = " select id,nom from servei ";
+		PreparedStatement st = Main.getConnection().prepareStatement(consulta);
+		ResultSet rs = st.executeQuery();
+
+		while (rs.next()) {
+			listServeis.add(
+					new Serveis(rs.getInt(1), rs.getString(2)));
 		}
 
 	}

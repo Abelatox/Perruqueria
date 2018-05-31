@@ -2,18 +2,44 @@
 
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AgendaController">
    <children>
-      <Canvas fx:id="canvas" height="640.0" width="1280.0" AnchorPane.bottomAnchor="212.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Canvas fx:id="canvas" height="640.0" layoutY="8.0" width="1280.0" AnchorPane.bottomAnchor="204.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="8.0" />
       <Button fx:id="btnBack" layoutX="14.0" layoutY="781.0" mnemonicParsing="false" onAction="#btnBack" prefHeight="57.0" prefWidth="176.0" text="BACK" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0">
          <font>
             <Font size="24.0" />
          </font>
       </Button>
-      <DatePicker fx:id="dpData" layoutX="71.0" layoutY="659.0" onAction="#dpData" />
+      <DatePicker fx:id="dpData" layoutX="29.0" layoutY="658.0" onAction="#dpData" />
+      <DatePicker fx:id="dpDataVisita" layoutX="517.0" layoutY="672.0" />
+      <Label layoutX="418.0" layoutY="677.0" text="Data visita">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <Label layoutX="418.0" layoutY="723.0" text="Servei" />
+      <Label layoutX="418.0" layoutY="764.0" text="Hora inici" />
+      <ComboBox fx:id="cServei" layoutX="517.0" layoutY="718.0" prefWidth="150.0" />
+      <TextField fx:id="tfHoraInici" layoutX="517.0" layoutY="759.0" />
+      <Label layoutX="418.0" layoutY="801.0" text="Hora fi" />
+      <TextField fx:id="tfHoraFi" layoutX="517.0" layoutY="796.0" />
+      <Label layoutX="767.0" layoutY="677.0" text="Client" />
+      <Label layoutX="767.0" layoutY="723.0" text="Client Guardat" />
+      <ComboBox fx:id="cClient" layoutX="867.0" layoutY="718.0" prefWidth="150.0" />
+      <TextField fx:id="tfClient" layoutX="867.0" layoutY="672.0" />
+      <Label layoutX="767.0" layoutY="764.0" text="Treballador" />
+      <ComboBox fx:id="cTreballdor" layoutX="867.0" layoutY="759.0" prefWidth="150.0" />
+      <Button fx:id="btnGuardar" layoutX="1071.0" layoutY="773.0" mnemonicParsing="false" onAction="#btnGuardar" prefHeight="57.0" prefWidth="176.0" text="GUARDAR">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
