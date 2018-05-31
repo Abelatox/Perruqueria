@@ -53,7 +53,7 @@ public class ServeiController {
 	}
 
 	/**
-	 * Per tornar al men� principal
+	 * Per tornar al menu principal
 	 * 
 	 * @param event
 	 * @throws Exception

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -171,7 +172,7 @@ public class AgendaController {
 		// Formateja el temps
 		String time = (hora < 10 ? "0" + hora : hora) + ":" + (mins == 0 ? "00:00" : mins + ":00");
 		return time;
-		
+
 	}
 
 	private Agenda getAgendaFromCell(int casellaX, int casellaY) {
@@ -212,14 +213,86 @@ public class AgendaController {
 	@FXML
 	void btnGuardar(ActionEvent event) throws Exception {
 		System.out.println("Hola");
-		
-		String sql = " insert into agenda (moment_trucada,client,servei,data_servei,hora_inici,hora_fi,treballador,client_guardat) values (?,?,?,?,?,?,?) ";
-		PreparedStatement st = Main.getConnection().prepareStatement(sql);
-		
-		
-		st.setString(1, dpDataVisita.getValue().toString());
-		st.setString(2, );
-		st.execute();
+
+		if(cClient.getValue()!=null) {
+
+			String sql = " insert into agenda (moment_trucada,servei,data_servei,hora_inici,hora_fi,treballador,client_guardat) values (?,?,?,?,?,?) ";
+			PreparedStatement st = Main.getConnection().prepareStatement(sql);
+			int numS = -1;
+			int numC = -1;
+			String numT = "";
+
+			for(int i = 0;i<listServeis.size();i++) {
+				if(cServei.getValue().equals(listServeis.get(i).getNom())) {
+					numS = i;
+					break;
+				}
+			}
+
+			if(cClient.getValue()!=null) {
+				for(int i = 0;i<listClients.size();i++) {
+					if(cClient.getValue().equals(listClients.get(i).getNom())) {
+						numC = i;
+						break;
+					}
+				}
+			}
+
+
+			for(int i = 0;i<listTreballadors.size();i++) {
+				if(cTreballdor.getValue().equals(listTreballadors.get(i).getNom())) {
+					numT = listTreballadors.get(i).getDni();
+					break;
+				}
+			}
+
+			java.sql.Date date = java.sql.Date.valueOf(dpDataVisita.getValue());
+
+			st.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+			st.setInt(2, numS);
+			st.setDate(3, date);
+			st.setString(4, tfHoraInici.getText());
+			st.setString(5, tfHoraFi.getText());
+			st.setString(6, numT);
+			st.setInt(7, numC);
+			st.execute();
+
+		} else {
+			
+			String sql = " insert into agenda (moment_trucada,client,servei,data_servei,hora_inici,hora_fi,treballador) values (?,?,?,?,?) ";
+			PreparedStatement st = Main.getConnection().prepareStatement(sql);
+			int numS = -1;
+			int numC = -1;
+			String numT = "";
+
+			for(int i = 0;i<listServeis.size();i++) {
+				if(cServei.getValue().equals(listServeis.get(i).getNom())) {
+					numS = i;
+					break;
+				}
+			}
+
+			for(int i = 0;i<listTreballadors.size();i++) {
+				if(cTreballdor.getValue().equals(listTreballadors.get(i).getNom())) {
+					numT = listTreballadors.get(i).getDni();
+					break;
+				}
+			}
+
+			java.sql.Date date = java.sql.Date.valueOf(dpDataVisita.getValue());
+
+			st.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+			st.setString(2, tfClient.getText());
+			st.setInt(3, numS);
+			st.setDate(4, date);
+			st.setString(5, tfHoraInici.getText());
+			st.setString(6, tfHoraFi.getText());
+			st.setString(7, numT);
+			st.execute();
+		}
+
+
+
 	}
 
 	/**
@@ -242,7 +315,7 @@ public class AgendaController {
 	 * @throws SQLException
 	 */
 	private void getTreballadors() throws SQLException {
-		
+
 
 	}
 
@@ -276,7 +349,7 @@ public class AgendaController {
 
 		Thread serveis = new Thread() {
 			public void run() {
-				String consulta = " select id,nom from servei ";
+				String consulta = " select id,nom,preu from servei ";
 				PreparedStatement st;
 				try {
 					st = Main.getConnection().prepareStatement(consulta);
@@ -284,16 +357,16 @@ public class AgendaController {
 					ResultSet rs = st.executeQuery();
 
 					while (rs.next()) {
-						listServeis.add(new Servei(rs.getInt(1), rs.getString(2)));
+						listServeis.add(new Servei(rs.getInt(1), rs.getString(2), rs.getDouble(3)));
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 		};
-		
+
 		serveis.start();
-		
+
 		Thread treballador = new Thread() {
 			public void run() {
 				String consulta = " select dni, name, nick, telefon, correu from treballador ";
@@ -312,9 +385,9 @@ public class AgendaController {
 				}
 			}
 		};
-		
+
 		treballador.start();
-		
+
 		clients.join();
 		serveis.join();
 		treballador.join();
