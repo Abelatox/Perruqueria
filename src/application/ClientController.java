@@ -47,12 +47,8 @@ public class ClientController {
 		} else {
 			String sql = " insert into client (name,sexe,telefon,correu) values (?,?,?,?) ";
 			PreparedStatement st = Main.getConnection().prepareStatement(sql);
-			if(rbHome.isSelected()) {
-				c = "H";
-			}
-			else {
-				c = "D";
-			}
+			c = rbHome.isSelected() ? "H" : "D";
+			
 			st.setString(1, tfNom.getText());
 			st.setString(2, c);
 			st.setString(3, lMovil.getText());
