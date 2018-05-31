@@ -76,13 +76,11 @@ public class AgendaController {
 		TOP, CENTER, BOTTOM
 	}
 
-	public void initialize() throws SQLException {
+	public void initialize() throws SQLException, InterruptedException {
 		SIZEX = canvas.getWidth() - RIGHT_OFFSET;
 		SIZEY = canvas.getHeight() - BOTTOM_OFFSET;
 
-		getTreballadors();
-		getClients();
-		getServeis();
+		getDades();
 
 		dpData.setValue(LocalDate.now());
 
@@ -121,14 +119,12 @@ public class AgendaController {
 				pintarMitja(casellaX, casellaY, PART.TOP);
 			else if (event.getButton() == MouseButton.SECONDARY)
 				pintarMitja(casellaX, casellaY, PART.BOTTOM);
-*/
+			 */
 			if (casellaX > 0 && casellaX < listTreballadors.size() + 1 && casellaY > 0 && casellaY < ROWS) {
 				Agenda a = getAgendaFromCell(casellaX, casellaY);
 				if (a != null) {
-					System.out.println(a.getClient());
+					//System.out.println(a.getClient());
 				} else {
-					System.out.println("Nova cita");
-					
 					String time = getTimeFromCell(casellaY);
 
 					tfHoraInici.setText(time);
@@ -147,6 +143,7 @@ public class AgendaController {
 
 		ArrayList<String> sNom = new ArrayList<>();
 		for (Servei s : listServeis) {
+			System.out.println(s.getNom());
 			sNom.add(s.getNom());
 		}
 
@@ -215,6 +212,14 @@ public class AgendaController {
 	@FXML
 	void btnGuardar(ActionEvent event) throws Exception {
 		System.out.println("Hola");
+		
+		String sql = " insert into agenda (moment_trucada,client,servei,data_servei,hora_inici,hora_fi,treballador,client_guardat) values (?,?,?,?,?,?,?) ";
+		PreparedStatement st = Main.getConnection().prepareStatement(sql);
+		
+		
+		st.setString(1, dpDataVisita.getValue().toString());
+		st.setString(2, );
+		st.execute();
 	}
 
 	/**
@@ -237,14 +242,7 @@ public class AgendaController {
 	 * @throws SQLException
 	 */
 	private void getTreballadors() throws SQLException {
-		String consulta = " select dni, name, nick, telefon, correu from treballador ";
-		PreparedStatement st = Main.getConnection().prepareStatement(consulta);
-		ResultSet rs = st.executeQuery();
-
-		while (rs.next()) {
-			listTreballadors.add(
-					new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
-		}
+		
 
 	}
 
@@ -252,9 +250,10 @@ public class AgendaController {
 	 * Obte i carrega les dades dels clients
 	 * 
 	 * @throws SQLException
+	 * @throws InterruptedException 
 	 */
-	private void getClients() throws SQLException {
-		new Thread() {
+	private void getDades() throws SQLException, InterruptedException {
+		Thread clients = new Thread() {
 			public void run() {
 				String consulta = " select id, name, sexe, telefon, correu from client ";
 				PreparedStatement st;
@@ -271,17 +270,11 @@ public class AgendaController {
 				}
 
 			}
-		}.start();
+		};
 
-	}
+		clients.start();
 
-	/**
-	 * Obte i carrega les dades dels serveis
-	 * 
-	 * @throws SQLException
-	 */
-	private void getServeis() throws SQLException {
-		new Thread() {
+		Thread serveis = new Thread() {
 			public void run() {
 				String consulta = " select id,nom from servei ";
 				PreparedStatement st;
@@ -297,7 +290,34 @@ public class AgendaController {
 					e.printStackTrace();
 				}
 			}
-		}.start();
+		};
+		
+		serveis.start();
+		
+		Thread treballador = new Thread() {
+			public void run() {
+				String consulta = " select dni, name, nick, telefon, correu from treballador ";
+				PreparedStatement st;
+				try {
+					st = Main.getConnection().prepareStatement(consulta);
+
+					ResultSet rs = st.executeQuery();
+
+					while (rs.next()) {
+						listTreballadors.add(
+								new Treballador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		
+		treballador.start();
+		
+		clients.join();
+		serveis.join();
+		treballador.join();
 
 	}
 
