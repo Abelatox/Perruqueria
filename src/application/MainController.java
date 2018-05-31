@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class MainController {
 
 	@FXML
-	private Button btnAgenda, btnClient, btnTreballador;
+	private Button btnAgenda, btnClient, btnTreballador,btnServeis;
 
 	/**
 	 * Menu Agenda
@@ -24,6 +24,20 @@ public class MainController {
 		Pane root = FXMLLoader.load(getClass().getResource("/application/AgendaController.fxml"));
 		Scene scene = new Scene(root);
 		Stage stage = (Stage) btnAgenda.getScene().getWindow();
+		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
+	}
+	
+	/**
+	 * Menu Agenda
+	 * 
+	 * @param event
+	 * @throws Exception
+	 */
+	@FXML
+	void btnServeis(ActionEvent event) throws Exception {
+		Pane root = FXMLLoader.load(getClass().getResource("/application/ServeisController.fxml"));
+		Scene scene = new Scene(root);
+		Stage stage = (Stage) btnServeis.getScene().getWindow();
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
 
