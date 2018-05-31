@@ -1,4 +1,4 @@
-package application;
+package application.objectes;
 
 public class Client {
 	int id;
@@ -6,9 +6,8 @@ public class Client {
 	String sexe;
 	String telefon;
 	String correu;
-	
+
 	public Client(int id, String nom, String sexe, String telefon, String correu) {
-		super();
 		this.id = id;
 		this.nom = nom;
 		this.sexe = sexe;
@@ -55,8 +54,5 @@ public class Client {
 	public void setCorreu(String correu) {
 		this.correu = correu;
 	}
-	
-	
-	
-	
+
 }

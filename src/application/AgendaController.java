@@ -4,17 +4,15 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.DriverManager;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Observable;
 
 import com.sun.javafx.tk.Toolkit;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import application.objectes.Agenda;
+import application.objectes.Client;
+import application.objectes.Servei;
+import application.objectes.Treballador;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,17 +29,15 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class AgendaController {
-	
-	
 
 	@FXML
-	private Button btnBack,btnGuardar;
+	private Button btnBack, btnGuardar;
 	@FXML
-	private DatePicker dpData,dpDataVisita;
+	private DatePicker dpData, dpDataVisita;
 	@FXML
-	private TextField tfHoraInici,tfHoraFi,tfClient;
+	private TextField tfHoraInici, tfHoraFi, tfClient;
 	@FXML
-	private ComboBox<String> cClient,cServei,cTreballdor;
+	private ComboBox<String> cClient, cServei, cTreballdor;
 
 	@FXML
 	private Canvas canvas;
@@ -62,9 +58,9 @@ public class AgendaController {
 	int HORA_INICI = 9;
 
 	ArrayList<Treballador> listTreballadors = new ArrayList<Treballador>();
-	
-	ArrayList<Serveis> listServeis = new ArrayList<Serveis>();
-	
+
+	ArrayList<Servei> listServeis = new ArrayList<Servei>();
+
 	ArrayList<Client> listClients = new ArrayList<Client>();
 
 	ArrayList<Agenda> listAgenda = new ArrayList<Agenda>();
@@ -86,7 +82,7 @@ public class AgendaController {
 		getTreballadors();
 		getClients();
 		getServeis();
-		
+
 		dpData.setValue(LocalDate.now());
 
 		// N� Columnes = una per treballador + una per hores
@@ -128,27 +124,27 @@ public class AgendaController {
 			if (casellaX > 0 && casellaX < listTreballadors.size() + 1 && casellaY > 0 && casellaY < ROWS) {
 				Agenda a = getAgendaFromCell(casellaX, casellaY);
 				if (a != null) {
-					System.out.println(a.client);
+					System.out.println(a.getClient());
 				} else {
 					System.out.println("Nova cita");
 				}
 			}
 		});
-	
+
 		ArrayList<String> tNom = new ArrayList<>();
 		for (Treballador t : listTreballadors) {
 			tNom.add(t.getNom());
 		}
-		
+
 		cTreballdor.getItems().addAll(tNom);
-		
+
 		ArrayList<String> sNom = new ArrayList<>();
-		for (Serveis s : listServeis) {
+		for (Servei s : listServeis) {
 			sNom.add(s.getNom());
 		}
-		
+
 		cServei.getItems().addAll(sNom);
-		
+
 		ArrayList<String> cNom = new ArrayList<>();
 		for (Client c : listClients) {
 			cNom.add(c.getNom());
@@ -157,8 +153,8 @@ public class AgendaController {
 
 		dibuixarTaula();
 		omplirTaula();
-	
-		};
+
+	};
 
 	private Agenda getAgendaFromCell(int casellaX, int casellaY) {
 		Treballador t = listTreballadors.get(casellaX - 1);
@@ -196,7 +192,7 @@ public class AgendaController {
 		Stage stage = (Stage) btnBack.getScene().getWindow();
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
-	
+
 	/**
 	 * Per posar una cita.
 	 * 
@@ -207,7 +203,7 @@ public class AgendaController {
 	void btnGuardar(ActionEvent event) throws Exception {
 		System.out.println("Hola");
 	}
-	
+
 	/**
 	 * Canvia el dia del calendari actualitzar els events del calendari
 	 * 
@@ -221,7 +217,6 @@ public class AgendaController {
 		dibuixarTaula();
 		omplirTaula();
 	}
-
 
 	/**
 	 * Obt� i carrega les dades dels treballadors
@@ -239,7 +234,7 @@ public class AgendaController {
 		}
 
 	}
-	
+
 	/**
 	 * Obte i carrega les dades dels clients
 	 * 
@@ -251,12 +246,12 @@ public class AgendaController {
 		ResultSet rs = st.executeQuery();
 
 		while (rs.next()) {
-			listClients.add(
-					new Client(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
+			listClients
+					.add(new Client(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5)));
 		}
 
 	}
-	
+
 	/**
 	 * Obte i carrega les dades dels serveis
 	 * 
@@ -268,8 +263,7 @@ public class AgendaController {
 		ResultSet rs = st.executeQuery();
 
 		while (rs.next()) {
-			listServeis.add(
-					new Serveis(rs.getInt(1), rs.getString(2)));
+			listServeis.add(new Servei(rs.getInt(1), rs.getString(2)));
 		}
 
 	}
@@ -317,7 +311,7 @@ public class AgendaController {
 						PreparedStatement st = Main.getConnection().prepareStatement(consulta);
 						System.out.println(dpData.getValue());
 						java.util.Date date = java.sql.Date.valueOf(dpData.getValue());
-						st.setDate(1,(java.sql.Date) date);
+						st.setDate(1, (java.sql.Date) date);
 						st.setString(2, t.getNom());
 						ResultSet rs = st.executeQuery();
 
@@ -345,18 +339,19 @@ public class AgendaController {
 	/**
 	 * Posa una data a la casella a partir d'una agenda
 	 * 
-	 * @param a Agenda a introdu�r
+	 * @param a
+	 *            Agenda a introdu�r
 	 */
 	private void posarDataAAgenda(Agenda a) {
 		int col = -1;
 		int row = -1;
 
 		for (int i = 0; i < listTreballadors.size(); i++) {
-			if (listTreballadors.get(i).getDni().equals(a.treballador)) {
+			if (listTreballadors.get(i).getDni().equals(a.getTreballador())) {
 				col = i;
 			}
 		}
-		String[] time = a.horaInici.split(":");
+		String[] time = a.getHoraInici().split(":");
 		int hora = Integer.parseInt(time[0]);
 		int min = Integer.parseInt(time[1]);
 
@@ -365,9 +360,8 @@ public class AgendaController {
 		// Si els minuts son m�s de 0 la row incrementar� (:30)
 		row = min != 0 ? row + 1 : row;
 
-		escriureACasella(col + 1, row + 1, ALIGN.TOP, a.client);
-		escriureACasella(col + 1, row + 1, ALIGN.BOTTOM, a.servei);
-
+		escriureACasella(col + 1, row + 1, ALIGN.TOP, a.getClient());
+		escriureACasella(col + 1, row + 1, ALIGN.BOTTOM, a.getServei());
 
 		listAgenda.add(a);
 	}
@@ -396,13 +390,14 @@ public class AgendaController {
 		float width = Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
 		// Longitud (px) de la font d'al�ada
 		float height = Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
-		// Punt mig de la cel�la (longitud de la cel�la * num de cel�la + longitud de
+		// Punt mig de la cel�la (longitud de la cel�la * num de cel�la + longitud
+		// de
 		// cel�la / 2.
 		double XCENTER = LEFT_OFFSET + (x * CELLX + CELLX / 2);
 		double YCENTER = TOP_OFFSET + (y * CELLY + CELLY / 1.05);
 		gc.fillText(text, XCENTER - width / 2, YCENTER - height / 2);
 	}
-	
+
 	/**
 	 * Escriu un text centrat alineat a una casella
 	 * 
@@ -415,7 +410,8 @@ public class AgendaController {
 		float width = Toolkit.getToolkit().getFontLoader().computeStringWidth(text, gc.getFont());
 		// Longitud (px) de la font d'al�ada
 		float height = Toolkit.getToolkit().getFontLoader().getFontMetrics(gc.getFont()).getLineHeight();
-		// Punt mig de la cel�la (longitud de la cel�la * num de cel�la + longitud de
+		// Punt mig de la cel�la (longitud de la cel�la * num de cel�la + longitud
+		// de
 		// cel�la / 2.
 		double XCENTER = LEFT_OFFSET + (x * CELLX + CELLX / 2);
 		double yOffset = 0;

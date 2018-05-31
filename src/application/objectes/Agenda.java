@@ -1,4 +1,4 @@
-package application;
+package application.objectes;
 
 public class Agenda {
 
@@ -95,6 +95,5 @@ public class Agenda {
 	public void setNomServei(String nomServei) {
 		this.nomServei = nomServei;
 	}
-
 	
 }

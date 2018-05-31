@@ -1,4 +1,4 @@
-package application;
+package application.objectes;
 
 public class Treballador {
 	private String dni, nom, nick, mail;
