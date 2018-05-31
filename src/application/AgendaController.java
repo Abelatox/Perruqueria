@@ -105,7 +105,7 @@ public class AgendaController {
 			// escriureACasella(casellaX, casellaY, "X");
 
 			// TODO eliminar funci�
-			if (1 == 1) {
+			if (1 == 2) {
 				Pane root;
 				try {
 					root = FXMLLoader.load(getClass().getResource("/application/AgendaController.fxml"));
@@ -117,17 +117,23 @@ public class AgendaController {
 				}
 			}
 
-			if (event.getButton() == MouseButton.PRIMARY)
+			/*if (event.getButton() == MouseButton.PRIMARY)
 				pintarMitja(casellaX, casellaY, PART.TOP);
 			else if (event.getButton() == MouseButton.SECONDARY)
 				pintarMitja(casellaX, casellaY, PART.BOTTOM);
-
+*/
 			if (casellaX > 0 && casellaX < listTreballadors.size() + 1 && casellaY > 0 && casellaY < ROWS) {
 				Agenda a = getAgendaFromCell(casellaX, casellaY);
 				if (a != null) {
 					System.out.println(a.getClient());
 				} else {
 					System.out.println("Nova cita");
+					
+					String time = getTimeFromCell(casellaY);
+
+					tfHoraInici.setText(time);
+					dpDataVisita.setValue(dpData.getValue());
+					cTreballdor.setValue(listTreballadors.get(casellaX-1).getNom());
 				}
 			}
 		});
@@ -157,18 +163,24 @@ public class AgendaController {
 
 	};
 
-	private Agenda getAgendaFromCell(int casellaX, int casellaY) {
-		Treballador t = listTreballadors.get(casellaX - 1);
-		// System.out.println(t.getNom());
-		int hora = (HORA_INICI + casellaY / 2);
+	private String getTimeFromCell(int row) {
+		int hora = (HORA_INICI + row / 2);
 		int mins = 0;
-		if (casellaY % 2 == 0) {
+		if (row % 2 == 0) {
 			hora--;
 			mins = 30;
 		}
 
 		// Formateja el temps
 		String time = (hora < 10 ? "0" + hora : hora) + ":" + (mins == 0 ? "00:00" : mins + ":00");
+		return time;
+		
+	}
+
+	private Agenda getAgendaFromCell(int casellaX, int casellaY) {
+		Treballador t = listTreballadors.get(casellaX - 1);
+		// System.out.println(t.getNom());
+		String time = getTimeFromCell(casellaY);
 
 		// Si la agenda coincideix en treballador i hora (columna i fila) la retorna
 		for (Agenda a : listAgenda) {
@@ -181,7 +193,7 @@ public class AgendaController {
 	}
 
 	/**
-	 * Per tornar al men� principal
+	 * Per tornar al menu principal
 	 * 
 	 * @param event
 	 * @throws Exception
@@ -385,9 +397,6 @@ public class AgendaController {
 			pintarCasella(col + 1, row + 1 + i);
 		}
 
-		for (int i = 0; i < listClients.size(); i++)
-			System.out.println("Client " + i + ": " + listClients.get(i).getNom());
-		System.out.println(a.getClientGuardat());
 		if (a.getClientGuardat() > -1) {
 			int cGuardat = a.getClientGuardat()-1;
 			escriureACasella(col + 1, row + 1, ALIGN.TOP, listClients.get(cGuardat).getNom());
