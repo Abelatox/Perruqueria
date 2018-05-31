@@ -159,7 +159,7 @@ public class AgendaController {
 
 	private Agenda getAgendaFromCell(int casellaX, int casellaY) {
 		Treballador t = listTreballadors.get(casellaX - 1);
-		System.out.println(t.getNom());
+		// System.out.println(t.getNom());
 		int hora = (HORA_INICI + casellaY / 2);
 		int mins = 0;
 		if (casellaY % 2 == 0) {
@@ -213,7 +213,7 @@ public class AgendaController {
 	 */
 	@FXML
 	void dpData(ActionEvent event) throws Exception {
-		System.out.println(dpData.getValue());
+		// System.out.println(dpData.getValue());
 		gc.clearRect(0, 0, SIZEX, SIZEY);
 		dibuixarTaula();
 		omplirTaula();
@@ -330,7 +330,7 @@ public class AgendaController {
 						// Seleccionem totes les dades en l'agenda d'un treballador en concret (bucle)
 						String consulta = " select a.*,s.nom from treballador t inner join agenda a on t.dni = a.treballador inner join servei s on s.id=a.servei where a.data_servei = ? and t.name = ? ";
 						PreparedStatement st = Main.getConnection().prepareStatement(consulta);
-						System.out.println(dpData.getValue());
+						// System.out.println(dpData.getValue());
 						java.sql.Date date = java.sql.Date.valueOf(dpData.getValue());
 						st.setDate(1, date);
 						st.setString(2, t.getNom());
@@ -338,10 +338,10 @@ public class AgendaController {
 
 						while (rs.next()) {
 							// Posem les dades a les caselles corresponents
-							for(int i=1;i<8;i++)
-								System.out.println(i+"- "+rs.getString(i));
-							System.out.println(8+"- "+rs.getString(8));
-							//String nom
+							// for(int i=1;i<8;i++)
+							// System.out.println(i+"- "+rs.getString(i));
+							// System.out.println(8+"- "+rs.getString(8));
+							// String nom
 							Agenda a = new Agenda(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
 									rs.getString(5), rs.getString(6), rs.getString(7), rs.getInt(8));
 							a.setServei(rs.getString(9));// No funcionava en el constructor
@@ -380,14 +380,16 @@ public class AgendaController {
 		// Si els minuts son mes de 0 la row incrementa (:30)
 		row = min != 0 ? row + 1 : row;
 
-		int temps = getDiferencia(a.getHoraInici(),a.getHoraFi());
-		for(int i=0;i<temps;i++) {
-			pintarCasella(col + 1, row + 1+i);
+		int temps = getDiferencia(a.getHoraInici(), a.getHoraFi());
+		for (int i = 0; i < temps; i++) {
+			pintarCasella(col + 1, row + 1 + i);
 		}
 
-		if(a.getClientGuardat()>-1) {
-			int cGuardat = a.getClientGuardat();
-
+		for (int i = 0; i < listClients.size(); i++)
+			System.out.println("Client " + i + ": " + listClients.get(i).getNom());
+		System.out.println(a.getClientGuardat());
+		if (a.getClientGuardat() > -1) {
+			int cGuardat = a.getClientGuardat()-1;
 			escriureACasella(col + 1, row + 1, ALIGN.TOP, listClients.get(cGuardat).getNom());
 		} else {
 			escriureACasella(col + 1, row + 1, ALIGN.TOP, a.getClient());
@@ -399,6 +401,7 @@ public class AgendaController {
 
 	/**
 	 * Retorna la diferencia entre 2 hores
+	 * 
 	 * @param horaInici
 	 * @param horaFi
 	 * @return
@@ -416,8 +419,8 @@ public class AgendaController {
 		int hores = Math.abs(horaFinal - horaInicial);
 		int minuts = Math.abs(minFinal - minInicial);
 
-		System.out.println(hores+":"+minuts);
-		return hores+(minuts == 0 ? 0 : 1);
+		// System.out.println(hores+":"+minuts);
+		return hores + (minuts == 0 ? 0 : 1);
 	}
 
 	/**
