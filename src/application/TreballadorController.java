@@ -1,7 +1,6 @@
 package application;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +15,7 @@ import javafx.stage.Stage;
 public class TreballadorController {
 
 	@FXML
-	private Button btnRegistrar,btnBack;
+	private Button btnRegistrar, btnBack;
 
 	@FXML
 	private TextField tfDNI, tfNom, tfNick, pfPassword, tfTelefon, tfCorreu;
@@ -56,7 +55,7 @@ public class TreballadorController {
 			}
 		}
 	}
-	
+
 	/**
 	 * Per tornar al men� principal
 	 * 

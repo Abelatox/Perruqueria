@@ -17,13 +17,13 @@ import javafx.stage.Stage;
 public class ClientController {
 
 	@FXML
-	private Button btnRegistre,btnSortir;
+	private Button btnRegistre, btnSortir;
 
 	@FXML
 	private TextField tfNom, tfMovil, tfCorreu;
 
 	@FXML
-	private Label lNom, lSexe, lMovil, lCorreu,lblInfo;
+	private Label lNom, lSexe, lMovil, lCorreu, lblInfo;
 
 	@FXML
 	private ToggleGroup gender;
@@ -42,13 +42,14 @@ public class ClientController {
 	@FXML
 	void btnRegistre(ActionEvent event) throws Exception {
 		String c;
-		if (tfNom.getText().equals("") || tfMovil.getText().equals("") || tfCorreu.getText().equals("") || (rbDona.isDisable() || rbHome.isDisable())) {
+		if (tfNom.getText().equals("") || tfMovil.getText().equals("") || tfCorreu.getText().equals("")
+				|| (rbDona.isDisable() || rbHome.isDisable())) {
 			Util.timedLabel("No pot haver-hi camps buits", lblInfo, 2000);
 		} else {
 			String sql = " insert into client (name,sexe,telefon,correu) values (?,?,?,?) ";
 			PreparedStatement st = Main.getConnection().prepareStatement(sql);
 			c = rbHome.isSelected() ? "H" : "D";
-			
+
 			st.setString(1, tfNom.getText());
 			st.setString(2, c);
 			st.setString(3, lMovil.getText());

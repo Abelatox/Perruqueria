@@ -11,8 +11,9 @@ public class Agenda {
 	String treballador;
 	int clientGuardat;
 	String nomServei;
-	
-	public Agenda(String horaTrucada, String client, String servei, String dataServei, String horaInici, String horaFi, String treballador, int clientGuardat) {
+
+	public Agenda(String horaTrucada, String client, String servei, String dataServei, String horaInici, String horaFi,
+			String treballador, int clientGuardat) {
 		this.horaTrucada = horaTrucada;
 		this.client = client;
 		this.servei = servei;
@@ -22,7 +23,7 @@ public class Agenda {
 		this.treballador = treballador;
 		this.clientGuardat = clientGuardat;
 	}
-	
+
 	public String getHoraTrucada() {
 		return horaTrucada;
 	}
@@ -44,7 +45,7 @@ public class Agenda {
 	}
 
 	public void setServei(String servei) {
-		//System.out.println(servei);
+		// System.out.println(servei);
 		this.servei = servei;
 	}
 
@@ -95,5 +96,5 @@ public class Agenda {
 	public void setNomServei(String nomServei) {
 		this.nomServei = nomServei;
 	}
-	
+
 }

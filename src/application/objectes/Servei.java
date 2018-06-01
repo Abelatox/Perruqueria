@@ -5,7 +5,7 @@ public class Servei {
 	String nom;
 	Double preu;
 
-	public Servei(int id, String nom,Double preu) {
+	public Servei(int id, String nom, Double preu) {
 		this.id = id;
 		this.nom = nom;
 		this.preu = preu;

@@ -12,15 +12,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class ServeiController {
 	@FXML
-	private Button btnBack,btnGuardar;
+	private Button btnBack, btnGuardar;
 
 	@FXML
 	private TextField tfServei, tfPreu;
@@ -59,7 +57,7 @@ public class ServeiController {
 			String sql = " insert into servei (id,nom,preu) values (?,?,?) ";
 			st = Main.getConnection().prepareStatement(sql);
 
-			st.setInt(1, listServeis.size()+1);
+			st.setInt(1, listServeis.size() + 1);
 			st.setString(2, tfServei.getText());
 			st.setDouble(3, Double.parseDouble(tfPreu.getText()));
 			st.execute();

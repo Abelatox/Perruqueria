@@ -1,6 +1,5 @@
 package application;
 
-import java.awt.Dialog;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -14,9 +13,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import javax.print.attribute.standard.DialogTypeSelection;
-
-import com.sun.corba.se.spi.orbutil.fsm.Action;
 import com.sun.javafx.tk.Toolkit;
 
 import application.objectes.Agenda;
@@ -38,10 +34,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-import jdk.nashorn.internal.runtime.regexp.joni.Warnings;
-
-import org.controlsfx.*;
-import org.controlsfx.dialog.*;
 
 public class AgendaController {
 
@@ -231,8 +223,8 @@ public class AgendaController {
 		int numS = -1;
 		int numC = -1;
 		String numT = "";
-		
-		if(tfHoraInici.getText().equals("")) {
+
+		if (tfHoraInici.getText().equals("")) {
 			Alert dg = new Alert(Alert.AlertType.ERROR);
 			dg.setTitle("Warinig");
 			dg.setContentText("Hi ha camps buits");
@@ -243,14 +235,13 @@ public class AgendaController {
 			return;
 		}
 
-		if ( cClient.getValue()!=null && tfClient.getText()==null ||
-				cClient.getValue()==null && tfClient.getText()!=null ){
+		if (cClient.getValue() != null && tfClient.getText() == null
+				|| cClient.getValue() == null && tfClient.getText() != null) {
 
-			if (dpDataVisita.getValue()!=null || tfHoraFi.getText()!=null || 
-					tfHoraInici.getText()!=null || cServei.getValue()!=null || 
-					cTreballdor.getValue()!=null) {
-				if(comprovarHorari()) {
-					
+			if (dpDataVisita.getValue() != null || tfHoraFi.getText() != null || tfHoraInici.getText() != null
+					|| cServei.getValue() != null || cTreballdor.getValue() != null) {
+				if (comprovarHorari()) {
+
 				} else {
 					Alert dg = new Alert(Alert.AlertType.ERROR);
 					dg.setTitle("Warinig");
@@ -259,11 +250,11 @@ public class AgendaController {
 					dg.show();
 
 					dg.setOnShowing(evt -> System.out.println("Showing"));
-					
+
 					return;
 				}
 			} else {
-				
+
 				Alert dg = new Alert(Alert.AlertType.ERROR);
 				dg.setTitle("Warinig");
 				dg.setContentText("La data no és corecte");
@@ -272,7 +263,6 @@ public class AgendaController {
 
 				dg.setOnShowing(evt -> System.out.println("Showing"));
 			}
-
 
 		} else {
 			Alert dg = new Alert(Alert.AlertType.ERROR);
@@ -338,64 +328,64 @@ public class AgendaController {
 	}
 
 	private boolean comprovarHorari() throws ParseException {
-		
+
 		DateFormat formatter = new SimpleDateFormat("HH:mm");
 		String horaInici = tfHoraInici.getText();
 		String horaFi = tfHoraFi.getText();
 		Time t = new Time(formatter.parse(horaInici).getTime());
 		Time tf = new Time(formatter.parse(horaFi).getTime());
-		if(t.after(tf)) {
+		if (t.after(tf)) {
 			return false;
 		}
-		if(t.equals(tf)) {
+		if (t.equals(tf)) {
 			return false;
 		}
 
-		String treballador="";
+		String treballador = "";
 		// Troba el DNI del treballador a partir del nom
 		for (int i = 0; i < listTreballadors.size(); i++) {
 			if (cTreballdor.getValue().equals(listTreballadors.get(i).getNom())) {
-				treballador=listTreballadors.get(i).getDni();
+				treballador = listTreballadors.get(i).getDni();
 			}
 		}
-		
-		for(int i=0; i < listAgenda.size(); i++) {
-			
-			String treballadorAgenda=listAgenda.get(i).getTreballador().trim();
-			
-			String data=listAgenda.get(i).getDataServei();
+
+		for (int i = 0; i < listAgenda.size(); i++) {
+
+			String treballadorAgenda = listAgenda.get(i).getTreballador().trim();
+
+			String data = listAgenda.get(i).getDataServei();
 			String dataServei = dpDataVisita.getValue().toString();
-			
-			if(treballadorAgenda.equals(treballador.trim())) {
-				if(data.equals(dataServei)){
-					
+
+			if (treballadorAgenda.equals(treballador.trim())) {
+				if (data.equals(dataServei)) {
+
 					String horaIniciA = listAgenda.get(i).getHoraInici();
 					String horaFiA = listAgenda.get(i).getHoraFi();
-					
+
 					Time tI = new Time(formatter.parse(horaIniciA).getTime());
 					Time tF = new Time(formatter.parse(horaFiA).getTime());
-					
-					if(t.after(tI) && t.before(tF)) {
+
+					if (t.after(tI) && t.before(tF)) {
 						return false;
 					}
-					
-					if(tf.after(tI) && tf.before(tF)) {
+
+					if (tf.after(tI) && tf.before(tF)) {
 						return false;
 					}
-					
-					if(t.after(tf)) {
+
+					if (t.after(tf)) {
 						return false;
 					}
-					
-					if(t.after(tI) && tf.before(tF)) {
+
+					if (t.after(tI) && tf.before(tF)) {
 						return false;
 					}
-					
-					if(t.equals(tI) && tf.after(tF)) {
+
+					if (t.equals(tI) && tf.after(tF)) {
 						return false;
 					}
-					
-					if(t.before(tI) && tf.equals(tF)) {
+
+					if (t.before(tI) && tf.equals(tF)) {
 						return false;
 					}
 				}
@@ -533,7 +523,7 @@ public class AgendaController {
 		}
 
 		// :30 - :00
-		for (int i = 0; i < ROWS / 2-1; i++) {
+		for (int i = 0; i < ROWS / 2 - 1; i++) {
 			escriureACasella(0, (i + 1) * 2, ALIGN.CENTER, HORA_INICI + i + ":30" + "-" + (HORA_INICI + i + 1) + ":00");
 		}
 
@@ -630,11 +620,21 @@ public class AgendaController {
 		int minFinal = Integer.parseInt(timeFi[1]);
 
 		int hores = Math.abs(horaFinal - horaInicial);
-		int minuts = Math.abs(minFinal - minInicial);
+		int minuts = (minFinal - minInicial);
 
 		// System.out.println(hores+":"+minuts);
-		int temps = hores * 2 + (minuts == 0 ? 0 : 1);
+		int rowExtra = 0;
+		if (minuts > 0) {
+			rowExtra++;
+		} else if (minuts < 0) {
+			rowExtra--;
+		}
+
+		int temps = hores * 2 + rowExtra;
+		System.out.println("----------");
+		System.out.println(minuts);
 		System.out.println(horaFinal + "-" + horaInicial + ": " + hores);
+		System.out.println(temps);
 		return temps;
 	}
 
@@ -667,17 +667,8 @@ public class AgendaController {
 		double col = LEFT_OFFSET + (x * CELLX);
 		double row = TOP_OFFSET + (y * CELLY);
 		Paint old = gc.getFill();
-		if(col==216.66666666666666) {
-			gc.setFill(Color.rgb(255, 0, 0));
-		} else if(col==428.3333333333333) {
-			gc.setFill(Color.rgb(255, 255, 0));
-		} else if(col==640.0) {
-			gc.setFill(Color.rgb(255, 100, 0));
-		} else if(col==851.6666666666666) {
-			gc.setFill(Color.rgb(0, 250, 0));
-		} else if(col==1063.3333333333333) {
-			gc.setFill(Color.rgb(0, 100, 255));
-		}
+		gc.setFill(Color.rgb(255, 0, 0));
+
 		gc.fillRect(col + LINE_WIDTH, row + LINE_WIDTH, CELLX - LINE_WIDTH, CELLY - LINE_WIDTH);
 		gc.setFill(old);
 	}

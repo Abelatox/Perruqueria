@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class MainController {
 
 	@FXML
-	private Button btnAgenda, btnClient, btnTreballador,btnServeis;
+	private Button btnAgenda, btnClient, btnTreballador, btnServeis;
 
 	/**
 	 * Menu Agenda
@@ -26,7 +26,7 @@ public class MainController {
 		Stage stage = (Stage) btnAgenda.getScene().getWindow();
 		Util.openGUI(scene, stage, Strings.TITLE_MAIN);
 	}
-	
+
 	/**
 	 * Menu Agenda
 	 * 
