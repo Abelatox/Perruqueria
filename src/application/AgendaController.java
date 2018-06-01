@@ -1,5 +1,6 @@
 package application;
 
+import java.awt.Dialog;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -8,10 +9,14 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import javax.print.attribute.standard.DialogTypeSelection;
+
+import com.sun.corba.se.spi.orbutil.fsm.Action;
 import com.sun.javafx.tk.Toolkit;
 
 import application.objectes.Agenda;
@@ -24,6 +29,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -32,6 +38,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+import jdk.nashorn.internal.runtime.regexp.joni.Warnings;
+
+import org.controlsfx.*;
+import org.controlsfx.dialog.*;
 
 public class AgendaController {
 
@@ -215,13 +225,65 @@ public class AgendaController {
 	 */
 	@FXML
 	void btnGuardar(ActionEvent event) throws Exception {
-		System.out.println("Hola");
 
 		String sql = " insert into agenda (moment_trucada,servei,data_servei,hora_inici,hora_fi,treballador,client,client_guardat) values (?,?,?,?,?,?,?,?) ";
 		PreparedStatement st = Main.getConnection().prepareStatement(sql);
 		int numS = -1;
 		int numC = -1;
 		String numT = "";
+		
+		if(tfHoraInici.getText().equals("")) {
+			Alert dg = new Alert(Alert.AlertType.ERROR);
+			dg.setTitle("Warinig");
+			dg.setContentText("Hi ha camps buits");
+			dg.setHeaderText("Informació del Error:");
+			dg.show();
+
+			dg.setOnShowing(evt -> System.out.println("Showing"));
+			return;
+		}
+
+		if ( cClient.getValue()!=null && tfClient.getText()==null ||
+				cClient.getValue()==null && tfClient.getText()!=null ){
+
+			if (dpDataVisita.getValue()!=null || tfHoraFi.getText()!=null || 
+					tfHoraInici.getText()!=null || cServei.getValue()!=null || 
+					cTreballdor.getValue()!=null) {
+				if(comprovarHorari()) {
+					
+				} else {
+					Alert dg = new Alert(Alert.AlertType.ERROR);
+					dg.setTitle("Warinig");
+					dg.setContentText("Les Dates no són corectes revisa les hores");
+					dg.setHeaderText("Informació del Error:");
+					dg.show();
+
+					dg.setOnShowing(evt -> System.out.println("Showing"));
+					
+					return;
+				}
+			} else {
+				
+				Alert dg = new Alert(Alert.AlertType.ERROR);
+				dg.setTitle("Warinig");
+				dg.setContentText("La data no és corecte");
+				dg.setHeaderText("Informació del Error:");
+				dg.show();
+
+				dg.setOnShowing(evt -> System.out.println("Showing"));
+			}
+
+
+		} else {
+			Alert dg = new Alert(Alert.AlertType.ERROR);
+			dg.setTitle("Warinig");
+			dg.setContentText("Els camps de clients i clients guardats");
+			dg.setHeaderText("Informació del Error:");
+			dg.show();
+
+			dg.setOnShowing(evt -> System.out.println("Showing"));
+			return;
+		}
 
 		// Troba el numero del servei a partir del nom
 		for (int i = 0; i < listServeis.size(); i++) {
@@ -258,7 +320,7 @@ public class AgendaController {
 		st.setTime(4, new Time(formatter.parse(tfHoraInici.getText()).getTime()));
 		st.setTime(5, new Time(formatter.parse(tfHoraFi.getText()).getTime()));
 		st.setString(6, numT);
-		System.out.println(numT);
+
 		if (numC > -1) {
 			st.setString(7, "");
 			st.setInt(8, numC);
@@ -272,6 +334,75 @@ public class AgendaController {
 		gc.clearRect(0, 0, SIZEX, SIZEY);
 		dibuixarTaula();
 		omplirTaula();
+
+	}
+
+	private boolean comprovarHorari() throws ParseException {
+		
+		DateFormat formatter = new SimpleDateFormat("HH:mm");
+		String horaInici = tfHoraInici.getText();
+		String horaFi = tfHoraFi.getText();
+		Time t = new Time(formatter.parse(horaInici).getTime());
+		Time tf = new Time(formatter.parse(horaFi).getTime());
+		if(t.after(tf)) {
+			return false;
+		}
+		if(t.equals(tf)) {
+			return false;
+		}
+
+		String treballador="";
+		// Troba el DNI del treballador a partir del nom
+		for (int i = 0; i < listTreballadors.size(); i++) {
+			if (cTreballdor.getValue().equals(listTreballadors.get(i).getNom())) {
+				treballador=listTreballadors.get(i).getDni();
+			}
+		}
+		
+		for(int i=0; i < listAgenda.size(); i++) {
+			
+			String treballadorAgenda=listAgenda.get(i).getTreballador().trim();
+			
+			String data=listAgenda.get(i).getDataServei();
+			String dataServei = dpDataVisita.getValue().toString();
+			
+			if(treballadorAgenda.equals(treballador.trim())) {
+				if(data.equals(dataServei)){
+					
+					String horaIniciA = listAgenda.get(i).getHoraInici();
+					String horaFiA = listAgenda.get(i).getHoraFi();
+					
+					Time tI = new Time(formatter.parse(horaIniciA).getTime());
+					Time tF = new Time(formatter.parse(horaFiA).getTime());
+					
+					if(t.after(tI) && t.before(tF)) {
+						return false;
+					}
+					
+					if(tf.after(tI) && tf.before(tF)) {
+						return false;
+					}
+					
+					if(t.after(tf)) {
+						return false;
+					}
+					
+					if(t.after(tI) && tf.before(tF)) {
+						return false;
+					}
+					
+					if(t.equals(tI) && tf.after(tF)) {
+						return false;
+					}
+					
+					if(t.before(tI) && tf.equals(tF)) {
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
 
 	}
 
@@ -536,7 +667,17 @@ public class AgendaController {
 		double col = LEFT_OFFSET + (x * CELLX);
 		double row = TOP_OFFSET + (y * CELLY);
 		Paint old = gc.getFill();
-		gc.setFill(Color.rgb(255, 0, 0));
+		if(col==216.66666666666666) {
+			gc.setFill(Color.rgb(255, 0, 0));
+		} else if(col==428.3333333333333) {
+			gc.setFill(Color.rgb(255, 255, 0));
+		} else if(col==640.0) {
+			gc.setFill(Color.rgb(255, 100, 0));
+		} else if(col==851.6666666666666) {
+			gc.setFill(Color.rgb(0, 250, 0));
+		} else if(col==1063.3333333333333) {
+			gc.setFill(Color.rgb(0, 100, 255));
+		}
 		gc.fillRect(col + LINE_WIDTH, row + LINE_WIDTH, CELLX - LINE_WIDTH, CELLY - LINE_WIDTH);
 		gc.setFill(old);
 	}

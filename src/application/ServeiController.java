@@ -1,7 +1,11 @@
 package application;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
+import application.objectes.Servei;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +24,7 @@ public class ServeiController {
 
 	@FXML
 	private TextField tfServei, tfPreu;
-	
+
 	@FXML
 	private Label lInfo;
 
@@ -32,16 +36,32 @@ public class ServeiController {
 	 */
 	@FXML
 	void btnGuardar(ActionEvent event) throws Exception {
-		
+
+		ArrayList<Servei> listServeis = new ArrayList<Servei>();
+
+		String consulta = " select id,nom,preu from servei ";
+		PreparedStatement st;
+		try {
+			st = Main.getConnection().prepareStatement(consulta);
+
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				listServeis.add(new Servei(rs.getInt(1), rs.getString(2), rs.getDouble(3)));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		if (tfPreu.getText().equals("") || tfServei.getText().equals("")) {
 			Util.timedLabel("No pot haver-hi camps buits", lInfo, 2000);
 		} else {
-			String sql = " insert into servei (nom,preu) values (?,?) ";
-			PreparedStatement st = Main.getConnection().prepareStatement(sql);
-			
-			
-			st.setString(1, tfServei.getText());
-			st.setDouble(2, Double.parseDouble(tfPreu.getText()));
+			String sql = " insert into servei (id,nom,preu) values (?,?,?) ";
+			st = Main.getConnection().prepareStatement(sql);
+
+			st.setInt(1, listServeis.size()+1);
+			st.setString(2, tfServei.getText());
+			st.setDouble(3, Double.parseDouble(tfPreu.getText()));
 			st.execute();
 
 			Pane root = FXMLLoader.load(getClass().getResource("/application/MainController.fxml"));
